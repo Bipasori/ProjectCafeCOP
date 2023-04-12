@@ -4,8 +4,7 @@
 pip install django
 python manage.py runserver
 
-bootstrapmade.com 에서
-Vesperr 디자인 템플릿 적용
+bootstrapmade.com 에서 Vesperr 디자인 템플릿 적용 (상업적 사용은 구매후 사용)
 
 https://icofont.com/icons
 
