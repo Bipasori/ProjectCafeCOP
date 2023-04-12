@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/sha1.js' %}" type="text/javascript"></script>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function registerMember(bno) {
+
+            memberid = document.getElementById("member_id").value;
+            if(memberid == "") {
+                document.getElementById("member_id").focus();
+                return false;
+            }
+
+            memberpwd = document.getElementById("member_pwd").value;
+            if(memberpwd == "") {
+                document.getElementById("member_pwd").focus();
+                return false;
+            }
+
+            memberpwd2 = document.getElementById("member_pwd2").value;
+            if(memberpwd2 == "") {
+                document.getElementById("member_pwd2").focus();
+                return false;
+            }
+
+            if(memberpwd != memberpwd2) {
+                alert("비밀번호 확인이 틀립니다.");
+                document.getElementById("member_pwd2").focus();
+                return false;
+            }
+            pwdencrypted = hex_sha1(memberpwd);
+
+            wflag = document.getElementById("warrant_flag").checked;
+            if(wflag == false) {
+                alert("약관 확인하세요.");
+                return false;
+            }
+
+            if(document.getElementById("idcheck").value != "1") {
+                alert("아이디 중복확인을 하세요.");
+                return false;
+            }
+
+            membername = document.getElementById("member_name").value;
+            memberemail = document.getElementById("member_email").value;
+
+            var strurl = "/member_insert?member_id=" + memberid + "&member_pwd=" + pwdencrypted + "&member_name=" + membername + "&member_email=" + memberemail;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    if(obj.flag == "1"){
+                        location.href = "/";
+                    }
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function checkId() {
+
+            memberid = document.getElementById("member_id").value;
+            if(memberid == "") {
+                document.getElementById("member_id").focus();
+                return false;
+            }
+
+            var strurl = "member_idcheck?member_id=" + memberid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    if(obj.flag == "0") {
+                        document.getElementById("idcheck").value = "1";
+                        document.getElementById("member_id").disabled  = true;
+                    }
+                    else {
+                        document.getElementById("member_id").focus();
+                    }
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+{% include "navbar.html" %}
+
+    <main id="main">
+        <input type="hidden" value="0" id="idcheck" >
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>사용자</h4>
+              <ol>
+                <li><a href="index.html">Home</a></li>
+                <li>회원가입</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>회원가입</h3>
+
+                <form action="member_insert" id="frmBoard">
+                </form>
+
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">아이디 (필수)</td>
+                        <td width="80%" align="left">
+                            <input type="input" placeholder="아 이 디" name="member_id" id="member_id" style="width:30%;" required>
+                            <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="checkId();">중복확인</button>
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">비밀번호 (필수)</td>
+                        <td width="80%" align="left">
+                            <input type="password" placeholder="비밀번호" name="member_pwd"  id="member_pwd">
+                            확인 <input type="password" placeholder="비밀번호 확인" name="member_pwd2" id="member_pwd2">
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">이  름</td>
+                        <td width="80%" align="left">
+                            <input type="input" placeholder="이  름" name="member_name"  id="member_name" value="" style="width:30%;">
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">이 메 일</td>
+                        <td width="80%" align="left">
+                            <input type="email" placeholder="이 메 일" name="member_email" id="member_email" value="" style="width:30%;">
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">약  관</td>
+                        <td width="80%" align="left">
+                            <div style="margin:10px 0;padding:10px;background-color:#e8e8e8;">
+                                [약관]<br>
+                                1. 이 사이트의 약관입니다.
+                            </div>
+                            <input type="checkbox" id="warrant_flag"> 약관 동의
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;" align="center">
+                        <td width="100%" colspan="2">
+                            <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="registerMember();">가입</button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

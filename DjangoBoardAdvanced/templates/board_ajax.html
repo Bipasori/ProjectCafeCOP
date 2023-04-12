@@ -1,0 +1,266 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>
+        {% block title %}
+        게시판 예제입니다. Ajax적용
+        {% endblock %}
+    </title>
+
+    <meta content="" name="descriptison">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    {% block styles %}
+
+    <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/icofont/icofont.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/remixicon/remixicon.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/boxicons/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/owl.carousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/venobox/venobox.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/vendor/aos/aos.css' %}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+
+    {% endblock %}
+
+    {% block scripts %}
+        <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        // Ajax로 제목 수정하기
+        function deleteAjaxBoard(bno) {
+
+            if (confirm("삭제 하시겠습니까?") == false) {
+                return false;
+            }
+
+            var strurl = "board_deleteajax?b_no=" + bno;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    document.getElementById("databox_" + bno).style.display = "none";
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function updateAjaxBoard(elem) {
+
+            var bno = elem.getAttribute("bno");
+            var bvalue = elem.value;
+
+            var data = { bno: bno, bvalue: bvalue };
+
+            var datastr = JSON.stringify(data);
+            // alert(datastr);
+            // return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    elem.style.color = "#FF6600";
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                }
+            };
+            xhr.open("POST", "board_updateajax");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(datastr);
+        }
+
+        function deleteFetchBoard(bno) {
+
+            if (confirm("삭제 하시겠습니까?") == false) {
+                return false;
+            }
+
+            var strurl = "board_deleteajax?b_no=" + bno;
+
+            fetch(strurl)
+              .then(
+                function(response) {
+                  if (response.status !== 200) {
+                    console.log('Error : ' + response.status);
+                    return;
+                  }
+                  response.json().then(function(data) {
+                    alert(data.result_msg);
+                    document.getElementById("databoxfetch_" + bno).style.display = "none";
+                  });
+                }
+              )
+              .catch(function(err) {
+                console.log('Delete fetch error :-S', err);
+              });
+        }
+
+
+
+        function updateFetchBoard(elem) {
+
+            var bno = elem.getAttribute("bno");
+            var bvalue = elem.value;
+
+            var data = { bno: bno, bvalue: bvalue };
+
+            var datastr = JSON.stringify(data);
+
+            fetch('board_updatepost', {
+                method:"POST",
+                body: datastr,
+                headers:{"Content-type":"application/json; charset=UTF-8"}
+            })
+              .then(
+                function(response) {
+                  if (response.status !== 200) {
+                    console.log('Error : ' + response.status);
+                    return;
+                  }
+                  response.json().then(function(data) {
+                    alert(data.result_msg);
+
+                    elem.style.color = "#FF6600";
+                  });
+                }
+              )
+              .catch(function(err) {
+                console.log('Delete fetch error :-S', err);
+              });
+        }
+
+
+    </script>
+{% endblock %}
+
+
+</head>
+
+<body>
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판 (Ajax)</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li>게시판</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>게시판 목록 - Ajax POST</h3>
+
+                {% if not rsBoard %}
+                    <p class="text-center">내용이 없습니다! </p>
+                {% endif %}
+
+                <div style="margin:20px 0;">
+                {% for i in rsBoard %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;" id="databox_{{ i.b_no }}">
+                            <td width="8%" align="center">{{ i.b_no }} </td>
+                            <td width="42%" align="left"><input type="text" class="form-control" bno="{{ i.b_no }}" value="{{ i.b_title }}" onchange="updateAjaxBoard(this);"></a></td>
+                            <td width="10%" align="center">{{ i.b_writer }} </td>
+                            <td width="20%" align="center">{{ i.b_date }} </td>
+                            <td width="8%" align="center">{{ i.b_count }} </td>
+                            <td width="12%" align="right" style="padding:5px 0;">
+                                <i class="icofont-close-circled" onclick="deleteAjaxBoard({{ i.b_no }})" style="cursor:pointer;"></i>
+                            </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+                </div>
+            </div>
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>게시판 목록 - Javascript fetch()</h3>
+
+                {% if not rsBoard %}
+                    <p class="text-center">내용이 없습니다! </p>
+                {% endif %}
+
+                <div style="margin:20px 0;">
+                {% for i in rsBoard %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;" id="databoxfetch_{{ i.b_no }}">
+                            <td width="8%" align="center">{{ i.b_no }} </td>
+                            <td width="42%" align="left"><input type="text" class="form-control" bno="{{ i.b_no }}" value="{{ i.b_title }}" onchange="updateFetchBoard(this);"></td>
+                            <td width="10%" align="center">{{ i.b_writer }} </td>
+                            <td width="20%" align="center">{{ i.b_date }} </td>
+                            <td width="8%" align="center">{{ i.b_count }} </td>
+                            <td width="12%" align="right" style="padding:5px 0;">
+                                <i class="icofont-close-circled" onclick="deleteFetchBoard({{ i.b_no }})" style="cursor:pointer;"></i>
+                            </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+                </div>
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

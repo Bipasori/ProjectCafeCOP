@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            {% block title %}
+            게시판 예제입니다.
+            {% endblock %}
+        </title>
+        {% block styles %}
+        <style>
+            .myclass {
+                color:blue;
+            }
+        </style>
+        {% endblock %}
+        {% block scripts %}
+        <script LANGUAGE="javascript">
+            function testFunction() {
+                alert("Javascript function...");
+            }
+        </script>
+        {% endblock %}
+    </head>
+    <body>
+    {% block body %}
+    <div>
+        <h3>장고(Django) + MariaDB 게시판</h3>
+        <ul style="display:flex;">
+            <li style="list-style:none;margin-right:10px;"><button>HOME</button></li>
+            <li style="list-style:none;margin-right:10px;"><button onclick="testFunction()">Call function</button></li>
+            <li style="list-style:none;margin-right:10px;"><a href="http://knu.abcyo.kr" target="_blank"><button>COP</button></a></li>
+        </ul>
+    </div>
+    <h3>게시판을 작성해 봅시다.</h3>
+    <img src="{% static '_images/cop.png' %}" />
+    {% endblock %}
+    </body>
+</html>

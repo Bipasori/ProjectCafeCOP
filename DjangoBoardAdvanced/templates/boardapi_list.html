@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        //var csrftoken = getCookie('csrftoken');
+        //alert(csrftoken);
+
+        var xhr;
+
+        // https://github.com/creimers/graphene-auth-examples
+        //https://www.fullstacklabs.co/blog/django-graphene-rest-graphql
+
+        // Ajax로 게시판 삭제
+        function deleteBoardAjax(bno) {
+
+            if (confirm("삭제 하시겠습니까?") == false) {
+                return false;
+            }
+
+            // 여기에서 Token을 생성
+            var csrftoken2 = getCookie('csrftoken');
+
+            var strurl = "boardapi_deleteajax?b_no=" + bno;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    document.getElementById("boardbox_" + bno).remove();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken2);
+            xhr.send(null);
+        }
+
+
+        function getHeaders() {
+
+            var req = new XMLHttpRequest();
+            req.open('GET', document.location, false);
+            req.send(null);
+
+            // 모든 값을 저장하는 array 생성
+            var data = new Object();
+
+            // 호출에 대하여 모든 headers를 각각의 항목으로 분리
+            var headers = req.getAllResponseHeaders().toLowerCase();
+            var aHeaders = headers.split('\n');
+            var i =0;
+            for (i= 0; i < aHeaders.length; i++) {
+                var thisItem = aHeaders[i];
+                var key = thisItem.substring(0, thisItem.indexOf(':'));
+                var value = thisItem.substring(thisItem.indexOf(':')+1);
+                data[key] = value;
+                }
+
+            // get referer
+            var referer = document.referrer;
+            data["Referer"] = referer;
+
+            // get useragent
+            var useragent = navigator.userAgent;
+            data["UserAgent"] = useragent;
+            data["url"] = window.location.href;
+
+            // 값들을 뿌려 준다
+            var display = "";
+            for(var key in data) {
+                if (key != "")
+                display += "<b>" + key + "</b> : " + data[key] + "<br>";
+            }
+
+            //alert(window.location.href);
+            document.getElementById("htmldump").innerHTML =  display;
+
+        }
+
+        function graphqlRead() {
+
+            const options = {
+              method: "post",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                query: `{ BoardAll { bNo bTitle bWriter bNote bCount bDate } }`
+              })
+            };
+
+            fetch(`graphql`, options)
+              .then(
+                function(response) {
+                  if (response.status !== 200) {
+                    console.log('Error : ' + response.status);
+                    return;
+                  }
+                  response.json().then(function(data) {
+                    var i;
+                    var obj = data.data.BoardAll[0];
+                    var objlen = Object.keys(obj).length;
+                    for (i = 0; i < objlen; i++) {
+                      alert(data.data.BoardAll[i].bTitle);
+                    }
+                  });
+                }
+              )
+              .catch(function(err) {
+                console.log('Fetch error :-S', err);
+              });
+        }
+
+        function graphqlWrite() {
+
+            const options = {
+              method: "post",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                query: `mutation { boardCreate (bTitle:"GraphQL 테스트입니다.", bWriter:"개발자", bNote:"테스트입니다.") { board { bNo bTitle bWriter }}}`
+              })
+            };
+
+            fetch(`graphql`, options)
+              .then(
+                function(response) {
+                  if (response.status !== 200) {
+                    console.log('Error : ' + response.status);
+                    return;
+                  }
+                  response.json().then(function(data) {
+                      alert(data.data.boardCreate.board.bTitle);
+                  });
+                }
+              )
+              .catch(function(err) {
+                console.log('Fetch error :-S', err);
+              });
+        }
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판 (GraphQL API)</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li>게시판 (API)</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>게시판 목록 (API)</h3>
+                <div style="margin:20px 0;text-align:right;">
+                    <button onclick="getHeaders();">HTTP</button>
+                    <button onclick="graphqlRead();">Javascript GraphQL read</button>
+                    <button onclick="graphqlWrite();">Write</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="location.href='/boardapi_write'">등록</button>
+                </div>
+                <div id="htmldump"></div>
+                {% if not rsBoard %}
+                    <p class="text-center">내용이 없습니다! </p>
+                {% endif %}
+
+                <div style="margin:20px 0;">
+                {% for i in rsBoard %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%" id="boardbox_{{ i.5 }}">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="8%" align="left" style="padding:5px 0;">
+                            {{ i.5 }}
+                        </td>
+                        <td width="50%" align="left" style="padding:5px 0;">
+                            <a href="boardapi_view?b_no={{ i.5 }}">{{ i.4 }}</a>
+                        </td>
+                        <td width="12%" align="left" style="padding:5px 0;">
+                            {{ i.3 }}
+                        </td>
+                        <td width="8%" align="left" style="padding:5px 0;">
+                            {{ i.1 }}
+                        </td>
+                        <td width="12%" align="left" style="padding:5px 0;">
+                            {{ i.0 | slice:"2:10" }}
+                        </td>
+                        <td width="10%" align="right" style="padding:5px 0;">
+                            <button href="" class="btn btn-outline-success" onclick="deleteBoardAjax({{ i.5 }})">삭제</button>
+                        </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+                </div>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

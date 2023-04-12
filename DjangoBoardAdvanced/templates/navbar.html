@@ -1,0 +1,57 @@
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container d-flex align-items-center">
+
+      <div class="logo mr-auto">
+        <h1 class="text-light"><a href="/"><span>플랫폼 학습</span></a></h1>
+        <!-- Uncomment below if you prefer to use an image logo -->
+        <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+      </div>
+
+      <nav class="nav-menu d-none d-lg-block">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li class="drop-down"><a href="board">Board</a>
+            <ul>
+              <li><a href="board">Board</a></li>
+              <li><a href="boardapi">Board (GraphQL)</a></li>
+              <li><a href="board_ajax">Board (Ajax)</a></li>
+              <li><a href="boardform">Board (Form)</a></li>
+            </ul>
+          </li>
+          <li><a href="album">Album</a></li>
+          <li class="drop-down"><a href="">Chart</a>
+            <ul>
+              <li><a href="/chart_bar">Bar chart</a></li>
+              <li><a href="/chart_bar2">예측 Bar</a></li>
+            </ul>
+          </li>
+          <li class="drop-down"><a href="">Menus</a>
+            <ul>
+              <li><a href="weblog">Web log(서버)</a></li>
+              <li><a href="weblog_front">Web log(Front)</a></li>
+              <li><a href="/graphql" target="_blank">GraphQL API</a></li>
+              <li class="drop-down"><a href="#">Down menu*</a>
+                <ul>
+                  <li><a href="#">Down 1*</a></li>
+                  <li><a href="#">Down 2*</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li class="drop-down">
+            {% if member_no == None %}<a href="">(없음)</a>
+            {% else %}<a href="">{{ member_name }}</a>
+            {% endif %}
+            <ul>
+              <li><a href="member_register">회원가입</a></li>
+              <li><a href="member_logout">Logout</a></li>
+              <li><a href="member_edit">정보수정</a></li>
+            </ul>
+          </li>
+          <li class="get-started"><a href="member_register">Register</a></li>
+        </ul>
+      </nav><!-- .nav-menu -->
+
+    </div>
+  </header><!-- End Header -->

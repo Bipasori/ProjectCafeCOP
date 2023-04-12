@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/sha1.js' %}" type="text/javascript"></script>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function updateMember(bno) {
+
+            membername = document.getElementById("member_name").value;
+            if(membername == "") {
+                document.getElementById("member_name").focus();
+                return false;
+            }
+
+            memberemail = document.getElementById("member_email").value;
+
+            var strurl = "member_update?member_name=" + membername + "&member_email=" + memberemail;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    if(obj.flag == "0"){
+                        location.href = "/";
+                    }
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+{% include "navbar.html" %}
+
+    <main id="main">
+        <input type="hidden" value="0" id="idcheck" >
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>사용자</h4>
+              <ol>
+                <li><a href="index.html">Home</a></li>
+                <li>정보변경</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>정보변경</h3>
+
+                <form action="member_insert" id="frmBoard">
+                </form>
+
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">아이디</td>
+                        <td width="80%" align="left">
+                            {{ member_id }}
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">이  름</td>
+                        <td width="80%" align="left">
+                            <input type="input" placeholder="이  름" id="member_name" value="{{ member_name }}" style="width:30%;">
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;">
+                        <td width="20%" align="center">이 메 일</td>
+                        <td width="80%" align="left">
+                            <input type="email" placeholder="이 메 일" id="member_email" value="{{ member_email }}" style="width:30%;" Required>
+                        </td>
+                    </tr>
+                    <tr style="height:45px;border-top:solid 1px #dddddd;" align="center">
+                        <td width="100%" colspan="2">
+                            <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="updateMember();">저 장</button>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

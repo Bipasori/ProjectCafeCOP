@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+{% endblock %}
+
+{% block body %}
+
+{% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판 상세보기 (API)</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li><a href="/boardapi">게시판 (API)</a></li>
+                <li>상세보기</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+
+                <div style="margin:20px 0;text-align:center;">
+                <h3>게시판 상세보기 (API)</h3>
+                </div>
+                {% if not rsDetail %}
+                    <p class="text-center">내용이 없습니다! </p>
+                {% else %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">제목</td>
+                            <td width="80%" align="left">{{ rsDetail.bTitle }} </td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">작성자</td>
+                            <td width="80%" align="left">{{ rsDetail.bWriter }} </td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">내용</td>
+                            <td width="80%" align="left"><pre>{{ rsDetail.bNote }}</pre></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">시간</td>
+                            <td width="80%" align="left">{{ rsDetail.bDate }} </td>
+                        </tr>
+                        <tr style="height:60px;border-top:solid 1px #dddddd;" align="center">
+                            <td width="100%" colspan="2">
+                                <a href="/boardapi_edit?b_no={{ rsDetail.bNo }}" class="btn btn-outline-success">수정</a>
+                                <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="location.href='boardapi'">목록</button>
+                            </td>
+                        </tr>
+                    </table>
+                {% endif %}
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

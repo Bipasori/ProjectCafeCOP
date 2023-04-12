@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+      function insertAlbum() {
+
+        var atitle = document.getElementById("a_title").value;
+
+        if (atitle == "") {
+            alert("제목을 넣어 주세요.");
+            document.getElementById("a_title").focus();
+            return false;
+        }
+
+        if (document.getElementById("a_type1").checked) {
+            var atype = "여행";
+        }
+        else if (document.getElementById("a_type2").checked) {
+            var atype = "생활";
+        }
+        else if (document.getElementById("a_type3").checked) {
+            var atype = "놀이";
+        }
+        else {
+            alert("유형을 선택하세요.");
+            return false;
+        }
+
+        var ufile = document.getElementById("ufile").value;
+
+        if (ufile == "") {
+            alert("사진을 넣어 주세요.");
+            return false;
+        }
+        document.getElementById("frmAlbum").submit();
+      }
+    </script>
+{% endblock %}
+
+{% block body %}
+
+{% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>Album 등록</h4>
+              <ol>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="/board">Album</a></li>
+                <li>등록</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>Album 등록</h3>
+
+
+                <form method="POST" enctype="multipart/form-data" action="/album_insert" id="frmAlbum">
+                    {% csrf_token %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">유형</td>
+                            <td width="80%" align="left">
+                                <input type="radio" name="a_type" id="a_type1" value="여행">여행
+                                <input type="radio" name="a_type" id="a_type2" value="생활">생활
+                                <input type="radio" name="a_type" id="a_type3" value="놀이">놀이
+                            </td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">제목</td>
+                            <td width="80%" align="left"><input type="input" placeholder="제 목" name="a_title" id="a_title" style="width:100%;"></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">이미지</td>
+                            <td width="80%" align="left">
+                            <input type = "file" name="ufile" id="ufile" >
+                        </td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">내용</td>
+                            <td width="80%" align="left"><textarea name="a_note" id="a_note" style="width:100%;" rows="5"></textarea></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;" align="center">
+                            <td width="100%" colspan="2">
+                                <span class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="insertAlbum()">저장</span>
+                                <a href="/album">
+                                <span class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;">목록</span>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

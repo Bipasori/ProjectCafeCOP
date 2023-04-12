@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    {% csrf_token %}
+    <script>
+    var xhr;
+
+    function writeLog() {
+
+        var req = new XMLHttpRequest();
+        req.open('GET', document.location, false);
+        req.send(null);
+
+        var data = new Object();
+
+        var headers = req.getAllResponseHeaders().toLowerCase();
+        var aHeaders = headers.split('\n');
+        var i =0;
+        for (i= 0; i < aHeaders.length; i++) {
+            var thisItem = aHeaders[i];
+            var key = thisItem.substring(0, thisItem.indexOf(':'));
+            var value = thisItem.substring(thisItem.indexOf(':')+1);
+            if (key == "server") {
+                server = value;
+            }
+        }
+
+        myserver = server.slice(1,5);
+        var useragent = navigator.userAgent;
+        var myurl = window.location.href;
+
+        querystr = 'mutation { weblogCreate(serverDesc: "'+myserver+'", urlDesc: "'+myurl+'", userAgent: "'+useragent+'") { weblog { id memberNo serverDesc useragent urlDesc logDate } } }'
+
+        //return false;
+
+        const options = {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            query: querystr
+          })
+        };
+
+        fetch(`graphql`, options)
+          .then(
+            function(response) {
+              if (response.status !== 200) {
+                console.log('Error : ' + response.status);
+                return;
+              }
+              response.json().then(function(data) {
+                var i;
+                var obj = data.data.weblogCreate.weblog;
+                document.getElementById("headerbox").innerHTML =  querystr;
+                //alert(obj.urlDesc);
+              });
+            }
+          )
+          .catch(function(err) {
+            console.log('Fetch error :-S', err);
+          });
+    }
+
+    function getHeaders() {
+        var req = new XMLHttpRequest();
+        req.open('GET', document.location, false);
+        req.send(null);
+
+        // associate array to store all values
+        var data = new Object();
+
+        // get all headers in one call and parse each item
+        var headers = req.getAllResponseHeaders().toLowerCase();
+        var aHeaders = headers.split('\n');
+        var i =0;
+        for (i= 0; i < aHeaders.length; i++) {
+            var thisItem = aHeaders[i];
+            var key = thisItem.substring(0, thisItem.indexOf(':'));
+            var value = thisItem.substring(thisItem.indexOf(':')+1);
+            data[key] = value;
+
+            if (key == "server") {
+            server = value;
+            }
+
+        }
+
+        // get referer
+        var referer = document.referrer;
+        data["Referer"] = referer;
+
+        //get useragent
+        var useragent = navigator.userAgent;
+        data["UserAgent"] = useragent;
+
+        //extra code to display the values in html
+        var display = "";
+        for(var key in data) {
+            if (key != "")
+            display += "<b>" + key + "</b> : " + data[key] + "<br>";
+        }
+
+        var myurl = window.location.href;
+        display += "<b>url</b> : " + myurl + "<br>";
+
+        document.getElementById("headerbox").innerHTML =  display;
+    }
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li>Web log</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+              <div>
+                  <button onclick="getHeaders()">GET Information</button>
+                  <button onclick="writeLog()">Call API</button>
+              </div>
+              <div id="headerbox" style="margin:20px;line-height:200%;">
+
+              </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}
