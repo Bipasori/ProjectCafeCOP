@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero" class="d-flex align-items-center">
+
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 pt-5 pt-lg-0 order-2 order-lg-1 d-flex flex-column justify-content-center">
+            <h1 data-aos="fade-up">협업의 원칙</h1>
+            <h2 data-aos="fade-up" data-aos-delay="400">1. 매일 코딩 습관화 <br>2. 타인의 요청을 먼저 처리<br>함께 탁월한 아웃풋을 만듭니다.</h2>
+            <div data-aos="fade-up" data-aos-delay="800">
+              <a href="#about" class="btn-get-started scrollto">바로가기</a>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="fade-left" data-aos-delay="200">
+            <img src="{% static 'assets/img/hero-img.png' %}" class="img-fluid animated" alt="">
+          </div>
+        </div>
+      </div>
+
+    </section><!-- End Hero -->
+
+    <main id="main">
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}
+

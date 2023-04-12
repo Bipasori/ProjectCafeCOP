@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script src="{% static 'js/home.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+
+{% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판 등록</h4>
+              <ol>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="/board">게시판</a></li>
+                <li>등록</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>게시판 등록</h3>
+
+                <form action="/board_insert" id="frmBoard">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">제목</td>
+                            <td width="80%" align="left"><input type="input" placeholder="제 목" name="b_title" style="width:100%;"></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">작성자</td>
+                            <td width="80%" align="left"><input type="input" placeholder="작성자" name="b_writer"></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;">
+                            <td width="20%" align="center">내용</td>
+                            <td width="80%" align="left"><textarea name="b_note" style="width:100%;" rows="5"></textarea></td>
+                        </tr>
+                        <tr style="height:45px;border-top:solid 1px #dddddd;" align="center">
+                            <td width="100%" colspan="2">
+                                <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="javascript:document.getElementById('frmBoard').submit();">저장</button>
+                                <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="location.href='/board'">목록</button>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

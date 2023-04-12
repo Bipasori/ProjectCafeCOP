@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>Data Study</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li>Data Study</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>Data Study</h3>
+
+                <div style="margin:20px 0;text-align:center;">
+                      <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="location.href='/ds_querytolist'">QuerySet > List</button>
+                </div>
+
+                <div style="margin:20px 0;text-align:center;">
+                    Result displayed on server console...
+                </div>
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}

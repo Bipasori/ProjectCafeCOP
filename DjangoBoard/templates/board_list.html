@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    {% include "navbar.html" %}
+
+    <main id="main">
+
+        <!-- ======= Breadcrumbs ======= -->
+        <section id="breadcrumbs" class="breadcrumbs">
+          <div class="container">
+
+            <div class="d-flex justify-content-between align-items-center">
+              <h4>게시판</h4>
+              <ol>
+                <li><a href="/">Home</a></li>
+                <li>게시판</li>
+              </ol>
+            </div>
+
+          </div>
+        </section><!-- End Breadcrumbs -->
+
+        <!-- ======= Services Section ======= -->
+        <section id="services" class="services">
+          <div class="container">
+
+            <div class="section-title" data-aos="fade-up">
+                <h3>게시판 목록</h3>
+
+                <div style="margin:20px 0;text-align:right;">
+                      <button class="btn btn-outline-success my-2 my-sm-0" style="margin-right:10px;" onclick="location.href='/board_write'">등록</button>
+                </div>
+
+                {% if not rsBoard %}
+                    <p class="text-center">내용이 없습니다! </p>
+                {% endif %}
+
+                <div style="margin:20px 0;">
+                {% for i in rsBoard %}
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr style="border-top:solid 1px #dddddd;">
+                            <td width="8%" align="center">{{ i.b_no }} </td>
+                            <td width="42%" align="left"><a href="/board_view?b_no={{ i.b_no }}">{{ i.b_title }}</a></td>
+                            <td width="10%" align="center">{{ i.b_writer }} </td>
+                            <td width="20%" align="center">{{ i.b_date }} </td>
+                            <td width="8%" align="center">{{ i.b_count }} </td>
+                            <td width="12%" align="right" style="padding:5px 0;">
+                                <a href="/board_delete?b_no={{ i.b_no }}" class="btn btn-outline-success">삭제</a>
+                            </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+                </div>
+
+            </div>
+
+          </div>
+        </section><!-- End Services Section -->
+
+    </main><!-- End #main -->
+
+    {% include "footer.html" %}
+
+{% endblock %}
