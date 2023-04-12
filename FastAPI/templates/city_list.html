@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>City - timezone</title>
+
+    {% block scripts %}
+        <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    //var cookie = jQuery.trim(cookies[i]);
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        // Ajax로 등록
+        function postCity() {
+
+            var cname = document.getElementById('name_').value;
+            var ctimezone = document.getElementById('timezone_').value;
+
+            var data = { name: cname, timezone: ctimezone }
+            var datastr = JSON.stringify(data);
+
+            //alert(datastr);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+
+                    var node = document.createElement("DIV");
+                    var textnode = document.createTextNode(obj.name + " - " + obj.timezone + " added...");
+                    node.appendChild(textnode);
+                    document.getElementById("citytable").appendChild(node);
+
+                    //alert(obj.name + " registered...");
+                }
+            };
+            xhr.open("POST", "/cities");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(datastr);
+        }
+
+        // Ajax로 수정
+        function putCity(elem) {
+
+            var cityid = parseInt(elem.getAttribute('cityid'));
+            var cname = document.getElementById('name_'+cityid).value;
+            var ctimezone = document.getElementById('timezone_'+cityid).value;
+
+            var data = { id: cityid, name: cname, timezone: ctimezone }
+            var datastr = JSON.stringify(data);
+
+            //alert(datastr);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+                    alert(obj.name + " modified...");
+                    document.getElementById('name_'+cityid).style.color = "#FF6600";
+                    document.getElementById('timezone_'+cityid).style.color = "#FF6600";
+                }
+            };
+            xhr.open("PUT", "/cities");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(datastr);
+        }
+
+
+        // Ajax로 삭제
+        function deleteCity(cityid) {
+
+            if (confirm("삭제 하시겠습니까?") == false) {
+                return false;
+            }
+
+            var strurl = "/cities/" + cityid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+
+                    document.getElementById('citybox_'+cityid).remove();
+                    //alert(obj.result_msg);
+                }
+            };
+            xhr.open("DELETE", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+{% endblock %}
+</head>
+<body>
+
+    <div style="padding:10px;">
+        <a href="/">HOME</a>
+    </div>
+
+    <h1 style="padding:10px;">City list</h1>
+    <div style="margin:20px 0">
+        <input type="text" id="name_" value="도시명" />
+        <input type="text" id="timezone_" value="Asia/Seoul" />
+        <button onclick="postCity()">등록</button>
+    </div>
+    <div  id="citytable">
+    <table width="100%" border="1" cellpadding="0" cellspacing="0">
+    {% if rsCity %}
+        {% for city in rsCity %}
+        <tr style="padding:10px;height:45px;" id="citybox_{{city.id}}">
+            <td align="center">{{city.id}}</td>
+            <td align="center"><input type="text" id="name_{{city.id}}" value="{{city.name}}" /></td>
+            <td align="center"><input type="text" id="timezone_{{city.id}}" value="{{city.timezone}}" /></td>
+            <td align="center">{{city.current_time}}</td>
+            <td align="center"><a href="/cities/{{city.id}}"><button>VIEW</button></a></td>
+            <td align="center"><button cityid="{{city.id}}" onclick="putCity(this)">수정</button></td>
+            <td align="center"><button onclick="deleteCity({{city.id}})">삭제</button></td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <tr style="padding:10px;border-top:solid 1px #3388cc;">
+            <td>
+            No city list...
+            </td>
+        </tr>
+    {% endif %}
+    </table>
+    </div>
+
+</body>
+</html>
