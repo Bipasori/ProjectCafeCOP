@@ -5,14 +5,13 @@
 pip install django
 python manage.py runserver
 
-bootstrapmade.com 에서 Vesperr 디자인 템플릿 적용 
+bootstrapmade.com 에서 Vesperr 디자인 템플릿 적용 (상업적 사용은 구매해서 사용하세요)
 
 pip install mysqlclient
 pip install pymysql
 
 python manage.py makemigrations
 python manage.py migrate
-
 
 pip install markdown
 pip install pygments
