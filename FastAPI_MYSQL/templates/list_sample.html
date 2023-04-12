@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User list</title>
+    
+        <script>
+
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        // Ajax로 등록
+        function postUser() {
+
+            var uname = document.getElementById('username_').value;
+            var uage = parseInt(document.getElementById('userage_').value);
+
+            var data = { id: 0, name: uname, age: uage };
+            var jsonstr = JSON.stringify(data);
+
+            //alert(jsonstr);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+
+                    var node = document.createElement("DIV");
+                    var textnode = document.createTextNode(uname + " - " + uage + " added...");
+                    node.appendChild(textnode);
+                    document.getElementById("usertable").appendChild(node);
+
+                    //alert(obj.name + " registered...");
+                }
+            };
+            xhr.open("POST", "/users");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(jsonstr);
+        }
+
+        // Ajax로 수정
+        function putUser(elem) {
+
+            var userid = parseInt(elem.getAttribute('userid'));
+            var uname = document.getElementById('username_'+userid).value;
+            var uage = parseInt(document.getElementById('userage_'+userid).value);
+
+            var data = { id: userid, name: uname, age: uage }
+            var jsonstr = JSON.stringify(data);
+
+            //alert(jsonstr);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+                    //alert(uname + " modified...");
+                    document.getElementById('username_'+userid).style.color = "#FF6600";
+                    document.getElementById('userage_'+userid).style.color = "#FF6600";
+                }
+            };
+            xhr.open("PUT", "/users");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(jsonstr);
+        }
+
+
+        // Ajax로 삭제
+        function deleteUser(userid) {
+
+            if (confirm("삭제 하시겠습니까?") == false) {
+                return false;
+            }
+
+            var data = { id: userid, name: '', age: 0 }
+            var jsonstr = JSON.stringify(data);
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+                    var obj = JSON.parse(data);
+
+                    document.getElementById('userbox_'+userid).remove();
+                    //alert(obj.result_msg);
+                }
+            };
+            xhr.open("DELETE", "/users");
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(jsonstr);
+        }
+
+    </script>
+
+</head>
+<body>
+
+    <div style="padding:10px;">
+        <a href="/">HOME</a>
+    </div>
+
+    <h1 style="padding:10px;">User list</h1>
+    <div style="margin:20px 0">
+        <input type="text" id="username_" value="사용자" />
+        <input type="text" id="userage_" value="1" />
+        <button onclick="postUser()">등록</button>
+    </div>
+    <div  id="usertable">
+    <table width="100%" border="1" cellpadding="0" cellspacing="0">
+    
+        
+        <tr style="padding:10px;height:45px;" id="userbox_6">
+            <td align="center">6</td>
+            <td align="center"><input type="text" id="username_6" value="홍길동1" /></td>
+            <td align="center"><input type="text" id="userage_6" value="45" /></td>
+            <td align="center"><a href="/users/6"><button>보기</button></a></td>
+            <td align="center"><button userid="6" onclick="putUser(this)">수정</button></td>
+            <td align="center"><button onclick="deleteUser(6)">삭제</button></td>
+        </tr>
+        
+        <tr style="padding:10px;height:45px;" id="userbox_7">
+            <td align="center">7</td>
+            <td align="center"><input type="text" id="username_7" value="고길동" /></td>
+            <td align="center"><input type="text" id="userage_7" value="46" /></td>
+            <td align="center"><a href="/users/7"><button>보기</button></a></td>
+            <td align="center"><button userid="7" onclick="putUser(this)">수정</button></td>
+            <td align="center"><button onclick="deleteUser(7)">삭제</button></td>
+        </tr>
+        
+        <tr style="padding:10px;height:45px;" id="userbox_9">
+            <td align="center">9</td>
+            <td align="center"><input type="text" id="username_9" value="명당1" /></td>
+            <td align="center"><input type="text" id="userage_9" value="3" /></td>
+            <td align="center"><a href="/users/9"><button>보기</button></a></td>
+            <td align="center"><button userid="9" onclick="putUser(this)">수정</button></td>
+            <td align="center"><button onclick="deleteUser(9)">삭제</button></td>
+        </tr>
+        
+        <tr style="padding:10px;height:45px;" id="userbox_11">
+            <td align="center">11</td>
+            <td align="center"><input type="text" id="username_11" value="dfhfghfd" /></td>
+            <td align="center"><input type="text" id="userage_11" value="32" /></td>
+            <td align="center"><a href="/users/11"><button>보기</button></a></td>
+            <td align="center"><button userid="11" onclick="putUser(this)">수정</button></td>
+            <td align="center"><button onclick="deleteUser(11)">삭제</button></td>
+        </tr>
+        
+        <tr style="padding:10px;height:45px;" id="userbox_12">
+            <td align="center">12</td>
+            <td align="center"><input type="text" id="username_12" value="사용자" /></td>
+            <td align="center"><input type="text" id="userage_12" value="1" /></td>
+            <td align="center"><a href="/users/12"><button>보기</button></a></td>
+            <td align="center"><button userid="12" onclick="putUser(this)">수정</button></td>
+            <td align="center"><button onclick="deleteUser(12)">삭제</button></td>
+        </tr>
+        
+    
+    </table>
+    </div>
+
+</body>
+</html>
