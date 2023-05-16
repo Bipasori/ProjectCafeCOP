@@ -1,0 +1,56 @@
+<script>
+function loadDoc() {
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("demo").innerHTML = this.responseText;
+       }
+     };
+
+   xhttp.open("POST", "url", true);
+   xhttp.send(data);
+}
+</script>
+
+<script>
+function loadDoc() {
+   var xhttp = new XMLHttpRequest();
+   xhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("demo").innerHTML = this.responseText;
+       }
+     };
+
+   xhttp.open("GET", "url?param1=값&param2=값", true);
+   xhttp.send();
+}
+</script>
+
+<script>
+$("table tbody tr td input.check").on('click', function(){
+    var _id = $(this).val();
+
+    $.ajax({
+        url: '{{url_for('index')}}',
+        type: 'PUT',
+        data: {id:_id},
+        dataType: 'json',
+        success: function() {
+            document.getElementById("demo").innerHTML = this.responseText;
+        }
+    })
+});
+</script>
+
+<script>
+function insertCode() {
+    xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+        }
+    };
+    xhr.open("POST", strurl);
+    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    xhr.send(null);
+}
+</script>

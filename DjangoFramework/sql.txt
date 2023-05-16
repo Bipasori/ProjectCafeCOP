@@ -1,0 +1,125 @@
+-- --------------------------------------------------------
+-- 호스트:                          223.194.46.212
+-- 서버 버전:                        10.4.6-MariaDB - mariadb.org binary distribution
+-- 서버 OS:                        Win64
+-- HeidiSQL 버전:                  11.1.0.6116
+-- --------------------------------------------------------
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+-- 테이블 edudb.cb_code_dtl 구조 내보내기
+CREATE TABLE IF NOT EXISTS `cb_code_dtl` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_cd` varchar(20) DEFAULT NULL,
+  `code_cd` varchar(20) DEFAULT NULL,
+  `code_name` varchar(50) DEFAULT NULL,
+  `register_date` timestamp NULL DEFAULT current_timestamp(),
+  `usage_flag` varchar(10) DEFAULT '1',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cb_code_hdr 구조 내보내기
+CREATE TABLE IF NOT EXISTS `cb_code_hdr` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_cd` varchar(20) DEFAULT NULL,
+  `type_name` varchar(50) DEFAULT NULL,
+  `register_date` timestamp NULL DEFAULT current_timestamp(),
+  `usage_flag` varchar(10) DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cb_itemgrp 구조 내보내기
+CREATE TABLE IF NOT EXISTS `cb_itemgrp` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemgrp_cd` varchar(20) DEFAULT NULL,
+  `itemgrp_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cm_bom 구조 내보내기
+CREATE TABLE `cm_bom` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`bom_type` VARCHAR(20) NULL DEFAULT 'MBOM' COLLATE 'utf8_general_ci',
+	`item_id` INT(11) NULL DEFAULT '0',
+	`top_id` INT(11) NULL DEFAULT '0',
+	`parent_id` INT(11) NULL DEFAULT '0',
+	`bom_order` INT(11) NULL DEFAULT '1',
+	`bom_level` INT(11) NULL DEFAULT '1',
+	`leaf_flag` VARCHAR(10) NULL DEFAULT '1' COLLATE 'utf8_general_ci',
+	`moitem_base` FLOAT NULL DEFAULT '0',
+	`jaitem_base` FLOAT NULL DEFAULT '0',
+	`unit_product` VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`free_flag` VARCHAR(10) NULL DEFAULT '0' COLLATE 'utf8_general_ci',
+	`loss_product` FLOAT NULL DEFAULT '0',
+	`demand_amt` FLOAT NULL DEFAULT '0',
+	`start_date` VARCHAR(8) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`end_date` VARCHAR(8) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`register_date` DATETIME NULL DEFAULT NULL,
+	`usage_flag` VARCHAR(8) NULL DEFAULT '1' COLLATE 'utf8_general_ci',
+	PRIMARY KEY (`id`) USING BTREE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=11
+;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cm_factory 구조 내보내기
+CREATE TABLE IF NOT EXISTS `cm_factory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `factory_cd` varchar(20) DEFAULT NULL,
+  `factory_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cm_item 구조 내보내기
+CREATE TABLE `cm_item` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`factory_id` INT(11) NULL DEFAULT '0',
+	`itemgrp_id` INT(11) NULL DEFAULT '0',
+	`itemaccnt_id` INT(11) NULL DEFAULT '0',
+	`unit_id` INT(11) NULL DEFAULT '0',
+	`item_cd` VARCHAR(20) NOT NULL COLLATE 'utf8_general_ci',
+	`item_name` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`item_spec` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_general_ci',
+	`item_status` VARCHAR(10) NULL DEFAULT 'Active' COLLATE 'utf8_general_ci',
+	`register_date` DATETIME NULL DEFAULT current_timestamp(),
+	`usage_flag` VARCHAR(10) NULL DEFAULT '1' COLLATE 'utf8_general_ci',
+	`bom_flag` VARCHAR(10) NULL DEFAULT '0' COLLATE 'utf8_general_ci',
+	PRIMARY KEY (`id`) USING BTREE
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=29
+;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+-- 테이블 edudb.cm_itemaccnt 구조 내보내기
+CREATE TABLE IF NOT EXISTS `cm_itemaccnt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemaccnt_cd` varchar(20) DEFAULT NULL,
+  `itemaccnt_name` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- 내보낼 데이터가 선택되어 있지 않습니다.
+
+/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
+/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

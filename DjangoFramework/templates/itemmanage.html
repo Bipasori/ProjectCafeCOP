@@ -1,0 +1,340 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Application Framework</title>
+
+    {% block styles %}
+    {% endblock %}
+
+    {% block scripts %}
+        <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function downloadTemplate() {
+
+            var strurl = "itemtemplate_download"
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    if(obj.flag == '0') {
+                        alert(obj.template_url);
+                        location.href = obj.template_url;
+                    }
+                    else {
+                        alert(obj.result_msg);
+                    }
+
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+{% endblock %}
+
+
+</head>
+<body>
+
+<input type="hidden" value="{{ typecd }}" id="mytype_cd" />
+
+<div style="margin:20px 0;">
+    <h1>
+    <a href="/"><span style="margin-right:20px;">ⓗ</span></a>
+        Application framework - <span style="color:#3388cc;">{{ title }}</span>
+    </h1>
+</div>
+<div style="height:30px;"></div>
+
+<div style="margin:20px 0;padding:10px;text-align:center;">
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr height="45">
+            <td width="60%" align="left">
+                조회 영역
+            </td>
+            <td width="15%" align="center">
+                <button id="formdownload_btn" style="padding:5px 8px;">엑셀 Template 다운로드</button>
+            </td>
+            <td width="30%" align="center" bgcolor="#e8e8e8">
+                <div style="padding-right:10px;">
+                    <form method="POST" enctype="multipart/form-data" action="itemdata_upload">
+                        {% csrf_token %}
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                        <td width="70%">
+                        <input type="file" name="ufile" style="padding:5px 8px;">
+                        </td>
+                        <td width="30%" align="right">
+                        <button type="submit" style="padding:5px 8px;">엑셀 업로드</button>
+                        </td>
+                        </tr>
+                        </table>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div style="margin:20px 0;padding:10px;background-color:#F8F8F8;">
+    <div style="border-top:solid 0px #888;">
+    <table border="0" cellpadding="3" cellspacing="3" width="100%">
+        <tr height="45">
+            <td width="7%" align="center"  bgcolor="#E8E8E8">공장코드</td>
+            <td width="12%" align="center"  bgcolor="#E8E8E8">공장명</td>
+            <td width="7%" align="center"  bgcolor="#E8E8E8">품목코드</td>
+            <td width="12%" align="center"  bgcolor="#E8E8E8">품목명</td>
+            <td width="17%" align="center"  bgcolor="#E8E8E8">규격</td>
+            <td width="7%" align="center"  bgcolor="#E8E8E8">단위</td>
+            <td width="7%" align="center"  bgcolor="#E8E8E8">품목그룹</td>
+            <td width="12%" align="center"  bgcolor="#E8E8E8">품목그룹명</td>
+            <td width="12%" align="center"  bgcolor="#E8E8E8">품목계정</td>
+            <td width="7%" align="center"  bgcolor="#E8E8E8"></td>
+        </tr>
+    </table>
+    </div>
+
+    {% if not rsItem %}
+        <p class="text-center">내용이 없습니다! </p>
+    {% else %}
+        {% for i in rsItem %}
+        <div style="border-bottom:solid 1px #888;" id="typebox_{{ i.id }}">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr height="45">
+            <td width="7%" align="center"  bgcolor="#FFF">{{ i.factory_cd }}</td>
+            <td width="12%" align="left"  bgcolor="#FFF">
+                {% if not rsFactory %}
+                    <p class="text-center">공장없음</p>
+                {% else %}
+                    <select name="itmfactory" id="itmfactory_{{ i.id }}" style="width:100%;padding:3px;">
+                    {% for ii in rsFactory %}
+                        {% if i.factory_id == ii.id %}
+                        <option value="{{ ii.id }}" selected>{{ ii.factory_name }}</option>
+                        {% else %}
+                        <option value="{{ ii.id }}">{{ ii.factory_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+            <td width="7%" align="center"  bgcolor="#FFF">{{ i.item_cd }}</td>
+            <td width="12%" align="left"  bgcolor="#FFF">{{ i.item_name }}</td>
+            <td width="17%" align="left"  bgcolor="#FFF">{{ i.item_spec }}</td>
+            <td width="7%" align="center"  bgcolor="#FFF">
+                {% if not rsUnit %}
+                    <p class="text-center">단위 없음</p>
+                {% else %}
+                    <select name="itmunit" id="itmunit_{{ i.id }}" style="width:100%;padding:3px;">
+                    {% for ii in rsUnit %}
+                        {% if i.unit_id == ii.id %}
+                        <option value="{{ ii.id }}" selected>{{ ii.code_name }}</option>
+                        {% else %}
+                        <option value="{{ ii.id }}">{{ ii.code_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+            <td width="7%" align="center"  bgcolor="#FFF">{{ i.itemgrp_cd }}</td>
+            <td width="12%" align="center"  bgcolor="#FFF">
+                {% if not rsItemgrp %}
+                    <p class="text-center">품목그룹 없음</p>
+                {% else %}
+                    <select name="itmgrp" id="itmgrp_{{ i.id }}" style="width:100%;padding:3px;">
+                    {% for ii in rsItemgrp %}
+                        {% if i.itemgrp_id == ii.id %}
+                        <option value="{{ ii.id }}" selected>{{ ii.itemgrp_name }}</option>
+                        {% else %}
+                        <option value="{{ ii.id }}">{{ ii.itemgrp_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+            <td width="12%" align="center"  bgcolor="#FFF">
+                {% if not rsItemaccnt %}
+                    <p class="text-center">품목계정 없음</p>
+                {% else %}
+                    <select name="itmaccnt" id="itmaccnt_{{ i.id }}" style="width:100%;padding:3px;">
+                    {% for ii in rsItemaccnt %}
+                        {% if i.itemaccnt_id == ii.id %}
+                        <option value="{{ ii.id }}" selected>{{ ii.itemaccnt_name }}</option>
+                        {% else %}
+                        <option value="{{ ii.id }}">{{ ii.itemaccnt_name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                {% endif %}
+            </td>
+            <td width="2%" align="center"  bgcolor="#E8E8E8">X</td>
+            <td width="5%" align="center"  bgcolor="#E8E8E8"><button>수정</button></td>
+        </tr>
+        </table>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin:10px;border-bottom:solid 1px #888;" id="typebox_new">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr height="45">
+        <td width="7%" align="center"  bgcolor="#FFF"></td>
+        <td width="12%" align="left"  bgcolor="#FFF">
+            {% if not rsFactory %}
+                <p class="text-center">공장없음</p>
+            {% else %}
+                <select name="itmfactory" id="itmfactory_new" style="width:100%;padding:3px;">
+                {% for ii in rsFactory %}
+                <option value="{{ ii.id }}">{{ ii.factory_name }}</option>
+                {% endfor %}
+                </select>
+            {% endif %}
+        </td>
+        <td width="7%" align="center"  bgcolor="#FFF"><input type="text" style="width:95%;padding:3px;"></td>
+        <td width="12%" align="center"  bgcolor="#FFF"><input type="text" style="width:95%;padding:3px;"></td>
+        <td width="17%" align="center"  bgcolor="#FFF"><input type="text" style="width:95%;padding:3px;"></td>
+        <td width="7%" align="center"  bgcolor="#FFF">
+            {% if not rsUnit %}
+                <p class="text-center">단위 없음</p>
+            {% else %}
+                <select name="itmunit" id="itmunit_{{ i.id }}" style="width:100%;padding:3px;">
+                {% for ii in rsUnit %}
+                <option value="{{ ii.id }}">{{ ii.code_name }}</option>
+                {% endfor %}
+                </select>
+            {% endif %}
+        </td>
+        <td width="7%" align="center"  bgcolor="#FFF">{{ i.itemgrp_cd }}</td>
+        <td width="12%" align="center"  bgcolor="#FFF">
+            {% if not rsItemgrp %}
+                <p class="text-center">품목그룹 없음</p>
+            {% else %}
+                <select name="itmgrp" id="itmgrp_{{ i.id }}" style="width:100%;padding:3px;">
+                {% for ii in rsItemgrp %}
+                <option value="{{ ii.id }}">{{ ii.itemgrp_name }}</option>
+                {% endfor %}
+                </select>
+            {% endif %}
+        </td>
+        <td width="12%" align="center"  bgcolor="#FFF">
+            {% if not rsItemaccnt %}
+                <p class="text-center">품목계정 없음</p>
+            {% else %}
+                <select name="itmaccnt" id="itmaccnt_{{ i.id }}" style="width:100%;padding:3px;">
+                {% for ii in rsItemaccnt %}
+                <option value="{{ ii.id }}">{{ ii.itemaccnt_name }}</option>
+                {% endfor %}
+                </select>
+            {% endif %}
+        </td>
+        <td width="2%" align="center"  bgcolor="#E8E8E8"></td>
+        <td width="5%" align="center"  bgcolor="#E8E8E8"><button>등록</button></td>
+    </tr>
+    </table>
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<div style="padding:10px;">
+    <h2>Code</h2>
+    <table width="100%" border="0" cellpadding="3" cellspacing="3">
+        <tr height="35">
+            <td width="25%" align="center" bgcolor="#e8e8e8">공장코드
+
+            </td>
+            <td width="25%" align="center" bgcolor="#e8e8e8">단위코드
+
+            </td>
+            <td width="25%" align="center" bgcolor="#e8e8e8">품목그룹
+
+            </td>
+            <td width="25%" align="center" bgcolor="#e8e8e8">품목계정
+
+            </td>
+        </tr>
+        <tr>
+            <td width="25%" align="center" valign="top">
+
+                {% if not rsFactory %}
+                    <p class="text-center">공장이 없습니다! </p>
+                {% else %}
+                    {% for i in rsFactory %}
+                    <div style="padding:10px;border-bottom:solid 1px #888;">{{ i.id }}.{{ i.factory_cd }} - {{ i.factory_name }}</div>
+                    {% endfor %}
+                {% endif %}
+
+            </td>
+            <td width="25%" align="center" valign="top">
+
+                {% if not rsUnit %}
+                    <p class="text-center">단위가 없습니다! </p>
+                {% else %}
+                    {% for i in rsUnit %}
+                    <div style="padding:10px;border-bottom:solid 1px #888;">{{ i.id }}.{{ i.code_cd }} - {{ i.code_name }}</div>
+                    {% endfor %}
+                {% endif %}
+
+            </td>
+            <td width="25%" align="center" valign="top">
+
+                {% if not rsItemgrp %}
+                    <p class="text-center">품목그룹이 없습니다! </p>
+                {% else %}
+                    {% for i in rsItemgrp %}
+                    <div style="padding:10px;border-bottom:solid 1px #888;">{{ i.id }}.{{ i.itemgrp_cd }} - {{ i.itemgrp_name }}</div>
+                    {% endfor %}
+                {% endif %}
+
+            </td>
+            <td width="25%" align="center" valign="top">
+
+                {% if not rsItemaccnt %}
+                    <p class="text-center">품목계정이 없습니다! </p>
+                {% else %}
+                    {% for i in rsItemaccnt %}
+                    <div style="padding:10px;border-bottom:solid 1px #888;">{{ i.id }}.{{ i.itemaccnt_cd }} - {{ i.itemaccnt_name }}</div>
+                    {% endfor %}
+                {% endif %}
+
+            </td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
+
+<script>
+document.getElementById('formdownload_btn').onclick = downloadTemplate;
+</script>

@@ -1,0 +1,138 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Application Framework</title>
+
+    {% block styles %}
+
+    {% endblock %}
+
+    {% block scripts %}
+        <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        // Ajax로 제목 수정하기
+        function insertCodeType() {
+
+            var codetypecd = document.getElementById("codetype_cd").value;
+            var codetypenm = document.getElementById("codetype_nm").value;
+
+            var strurl = "codetype_insert?codetype_cd=" + codetypecd + "&codetype_nm=" + codetypenm;
+            alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.reault_msg);
+
+                    if(obj.flag =='0') {
+                        location.reload();
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+        // Ajax로 제목 수정하기
+        function updateCode(elem) {
+
+            var cvalue= elem.value;
+            if(cvalue == '') {
+                alert('값 없음');
+                elem.focus()
+                return false;
+            }
+            var codeid= elem.getAttribute("cdid");
+
+            var strurl = "code_update?codeid=" + codeid + "&cd_nm=" + cvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.reault_msg);
+                    elem.style.backgroundColor = "#3388cc";
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+    </script>
+{% endblock %}
+
+
+</head>
+<body>
+
+<div style="margin:20px 0;">
+    <h1>
+    <a href="/"><span style="margin-right:20px;">ⓗ</span></a>
+        Application framework - <span style="color:#3388cc;">{{ title }}</span>
+    </h1>
+</div>
+<div style="height:10px;"></div>
+
+<div style="margin:20px 0;">
+    <a href="codemanage?type_cd={{ type_cd }}"><span style="margin-right:20px;">통합코드</span></a>
+</div>
+
+<div style="height:10px;"></div>
+
+    <div style="margin:20px 0;">
+        <table width="100%" cellspacing="3" cellpadding="3" border="0">
+            <tr style="height:45px;">
+                <td width="10%" align="center" bgcolor="#e8e8e8">TYPE</td>
+                <td width="30%" >{{ type_cd }}</td>
+                <td width="60%" ></td>
+            </tr>
+            <tr style="height:45px;">
+                <td width="10%" align="center" bgcolor="#e8e8e8">CODE</td>
+                <td width="30%" >{{ code_cd }}</td>
+                <td width="60%" ></td>
+            </tr>
+            <tr style="height:45px;">
+                <td width="10%" align="center" bgcolor="#e8e8e8">NAME</td>
+                <td width="30%" >{{ code_name }}</td>
+                <td width="60%" ></td>
+            </tr>
+        </table>
+    </div>
+
+
+<div style="margin:20px 0;">
+</div>
+
+
+</body>
+</html>

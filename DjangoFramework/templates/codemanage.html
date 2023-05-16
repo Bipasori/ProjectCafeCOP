@@ -1,0 +1,360 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Application Framework</title>
+
+    {% block styles %}
+    {% endblock %}
+
+    {% block scripts %}
+        <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+
+        function insertType() {
+
+            var typecd = document.getElementById("type_cd").value;
+            var typename = document.getElementById("type_name").value;
+
+            if(typecd == '') {
+                alert('Type code 비었습니다.');
+                document.getElementById("type_cd").focus();
+                return false;
+            }
+
+            if(typename == '') {
+                alert('Type명이 비었습니다.');
+                document.getElementById("type_name").focus();
+                return false;
+            }
+
+            var strurl = "codetype_insert?typecd=" + typecd + "&typename=" + typename;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    if(obj.flag =='0') {
+                        location.reload();
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function updateType(elem) {
+
+            var cvalue= elem.value;
+            if(cvalue == '') {
+                alert('값 없음');
+                elem.focus()
+                return false;
+            }
+
+            var typeid= elem.getAttribute("typeid");
+
+            var strurl = "codetype_update?typeid=" + typeid + "&typename=" + cvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    elem.style.backgroundColor = "#BBDDFF";
+                    if (flag =='1') {
+                        alert(obj.result_msg);
+                        elem.focus()
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function deleteType(elem) {
+
+            var typeid= elem.getAttribute("typeid");
+
+            if (!confirm("삭제 하시겠습니까")) {
+                return false;
+            }
+
+            var strurl = "codetype_delete?typeid=" + typeid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    if (obj.flag == '1') {
+                        alert(obj.result_msg);
+                        elem.style.backgroundColor = "#BBDDFF";
+                    }
+                    else {
+                        document.getElementById("typebox_"+typeid).remove();
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function insertCode() {
+
+            var mytypecd = document.getElementById("mytype_cd").value;
+            //alert(mytypecd);
+
+            var codecd = document.getElementById("code_cd").value;
+            var codename = document.getElementById("code_name").value;
+
+            if(codecd == '') {
+                alert('Code 비었습니다.');
+                document.getElementById("code_cd").focus();
+                return false;
+            }
+
+            if(codename == '') {
+                alert('Code명 비었습니다.');
+                document.getElementById("code_name").focus();
+                return false;
+            }
+
+            var strurl = "code_insert?typecd=" + mytypecd + "&codecd=" + codecd + "&codename=" + codename;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+
+                    if(obj.flag =='0') {
+                        location.reload();
+                    }
+                    else {
+                        alert(obj.result_msg);
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function updateCode(elem) {
+
+            var cvalue= elem.value;
+            if(cvalue == '') {
+                alert('값 없음');
+                elem.focus()
+                return false;
+            }
+            var codeid= elem.getAttribute("cdid");
+
+            var strurl = "code_update?codeid=" + codeid + "&cd_nm=" + cvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    // alert(obj.result_msg);
+                    elem.style.backgroundColor = "#BBDDFF";
+                    elem.focus()
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+
+        function deleteCode(elem) {
+
+            var codeid = elem.getAttribute("codeid");
+
+            if (!confirm("삭제 하시겠습니까")) {
+                return false;
+            }
+
+            var strurl = "code_delete?codeid=" + codeid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    if (obj.flag == '0') {
+                        document.getElementById("codebox_"+codeid).remove();
+                    }
+                }
+            };
+            xhr.open("POST", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+    </script>
+{% endblock %}
+
+
+</head>
+<body>
+
+<input type="hidden" value="{{ typecd }}" id="mytype_cd" />
+
+<div style="margin:20px 0;">
+    <h1>
+    <a href="/"><span style="margin-right:20px;">ⓗ</span></a>
+        Application framework - <span style="color:#3388cc;">{{ title }}</span>
+    </h1>
+</div>
+<div style="height:30px;"></div>
+
+<div style="margin:20px 0;">
+    TYPE
+    <input type="text" id="type_cd" value="" >
+    <input type="text" id="type_name" value="" >
+    <button id="type_insert_btn">저장</button>
+    <a href="codemanage"><span style="margin-left:30px;">전체</span></a>
+
+    {% if not rsHeader %}
+        <p class="text-center">내용이 없습니다! </p>
+    {% else %}
+        <div style="margin:20px 0;">
+        <div style="border-top:solid 0px #888;">
+        <table border="0" cellpadding="3" cellspacing="3" width="100%">
+            <tr height="45" >
+                <td width="15%" align="left"  bgcolor="#E8E8E8">TYPE CODE
+                <td width="20%" align="center"  bgcolor="#E8E8E8">TYPE NAME</td>
+                <td width="5%" align="center" style="padding:5px 0;"  bgcolor="#E8E8E8">
+                </td>
+                <td width="65%" align="right" style="padding:5px 0;"  bgcolor="#E8E8E8">
+                </td>
+            </tr>
+        </table>
+        </div>
+        {% for i in rsHeader %}
+        <div style="border-bottom:solid 1px #888;" id="typebox_{{ i.id }}">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tr height="45" id="databox_{{ i.id }}">
+                <td width="15%" align="left">{{ i.id }} .
+                    <a href="codemanage?type_cd={{ i.type_cd }}">{{ i.type_cd }}</a> </td>
+                <td width="20%" align="center">
+                    <input type="text" typeid="{{ i.id }}" value="{{ i.type_name }}" onchange="updateType(this)" />
+                </td>
+                <td width="5%" align="center" style="padding:5px 0;" >
+                    <span typeid="{{ i.id }}" onclick="deleteType(this)" style="cursor:pointer;">X</span>
+                </td>
+                <td width="65%" align="right" style="padding:5px 0;" >
+                </td>
+            </tr>
+        </table>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<div style="height:30px;"></div>
+
+<div style="margin:20px 0;">
+    TYPE : <span style="color:#FF6600;font-weight:bold;">{{ typecd }}</span>
+</div>
+
+<div style="margin:20px 0;">
+
+    {% if typecd == None %}
+        <p class="text-center">Code type을 선택하세요. </p>
+    {% else %}
+
+        CODE
+        <input type="text" id="code_cd" value="" >
+        <input type="text" id="code_name" value="" >
+        <button id="code_insert_btn">저장</button>
+
+        {% if rsCode %}
+            <div style="margin:20px 0;">
+            <table border="0" cellpadding="3" cellspacing="3" width="100%">
+                <tr style="height:45px;border-top:solid 1px #dddddd;">
+                    <td width="10%" align="center" bgcolor="#E8E8E8">TYPE CD </td>
+                    <td width="10%" align="center" bgcolor="#E8E8E8">CODE</td>
+                    <td width="20%" align="center" bgcolor="#E8E8E8">CODE NAME</td>
+                    <td width="5%" align="center"  bgcolor="#E8E8E8" ></td>
+                    <td width="55%" align="right"  bgcolor="#E8E8E8"></td>
+                </tr>
+            </table>
+            {% for j in rsCode %}
+            <div style="border-bottom:solid 1px #888;" id="codebox_{{ j.id }}">
+            <table border="0" cellpadding="3" cellspacing="3" width="100%">
+                <tr style="height:45px;border-bottom:solid 1px #000;" id="databox_{{ j.id }}">
+                    <td width="10%" align="center">{{ j.type_cd }} </td>
+                    <td width="10%" align="center">{{ j.id }} . <a href="code_view?codeid={{ j.id }}">{{ j.code_cd }} </a></td>
+                    <td width="20%" align="center"><input type="text" cdid="{{ j.id }}" value="{{ j.code_name }}" onchange="updateCode(this)" /> </td>
+                    <td width="5%" align="center" style="padding:5px 0;" >
+                    <span codeid="{{ j.id }}" onclick="deleteCode(this)" style="cursor:pointer;">X</span>
+                    </td>
+                    <td width="55%" align="right" style="padding:5px 0;"></td>
+                </tr>
+            </table>
+            </div>
+            {% endfor %}
+        {% endif %}
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
+
+<script>
+document.getElementById('type_insert_btn').onclick = insertType;
+document.getElementById('code_insert_btn').onclick = insertCode;
+</script>
