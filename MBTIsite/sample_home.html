@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI (Myers-Briggs Type Indicator) admin</title>
+
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQheader() {
+
+            var pname = document.getElementById("pname").value;
+            var pdesc = document.getElementById("pdesc").value;
+
+            if (pname == "") {
+                document.getElementById("pname").focus();
+                return false;
+            }
+            if (pdesc == "") {
+                document.getElementById("pdesc").focus();
+                return false;
+            }
+
+            var strurl = "create_qheader?pname=" + pname + "&pdesc=" + pdesc;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQheader(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qheader?headerid=" + hid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function createQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+
+            var strurl = "create_question?headerid=" + hid + "&parentid=" + pid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQuestion(elem) {
+
+            var qid = elem.getAttribute("qid");
+            var flag = elem.getAttribute("flag");
+            var qvalue = elem.value;
+
+            if (qvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_question?qid=" + qid + "&flag=" + flag + "&qvalue=" + qvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function selectEvent(hid) {
+
+            var strurl = "make_session?hid=" + hid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    location.href = "/?headerid=" + hid;
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function resetEvent() {
+
+            var strurl = "reset_session";
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    location.href = "/";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function selectQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+            var strurl = "select_answer?qid=" + pid;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.href = "/?headerid=" + hid + "&parentid=" + pid;
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+
+</head>
+<body>
+
+<a href="/">Home</a>
+<a href="waadmin">Admin</a>
+
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Event - <span style="color:#FF6600;">2020-12-17 11:09:44.890095</span></h2>
+</div>
+<div style="margin:20px 0;padding:10px;">
+    
+    <h2><span style="color:#000;">Year12. 이번 연말 꼭 하고 싶은 것은 무엇인가요?</span> <span onclick="resetEvent()" style="cursor:pointer;color:#3388cc;">이벤트 선택</span></h2>
+
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h3><span style="color:#000;">총7 - Level7) Q7. 정열의 두잔!!!</span></h3>
+    <div style="margin:20px 0;">
+                
+        <div style="margin:10px 0;">
+        <a href="https://www.google.com/search?q=white%20wine">깔끔한 화이트.<br>
+        <img src="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" style="width:50%;"></a>
+        </div>
+
+        <div style="margin:10px 0;">
+        <a href="http://www.globalintelligence.kr/">역쉬 레드!<br>
+        <img src="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" style="width:50%;"></a>
+        </div>
+
+    </div>
+    <div style="margin-top:30px;">
+        <pre style="font-size:18px;">Q
+            답변 진행...
+        </pre>
+    </div>
+</div>
+
+</body>
+</html>

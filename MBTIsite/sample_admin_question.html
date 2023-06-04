@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wine graph admin</title>
+
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQheader() {
+
+            var pname = document.getElementById("pname").value;
+            var pdesc = document.getElementById("pdesc").value;
+
+            if (pname == "") {
+                document.getElementById("pname").focus();
+                return false;
+            }
+            if (pdesc == "") {
+                document.getElementById("pdesc").focus();
+                return false;
+            }
+
+            var strurl = "create_qheader?pname=" + pname + "&pdesc=" + pdesc;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function changeQheader(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qheader?headerid=" + hid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function createQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+
+            var strurl = "create_question?headerid=" + hid + "&parentid=" + pid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQuestion(elem) {
+
+            var qid = elem.getAttribute("qid");
+            var flag = elem.getAttribute("flag");
+            var qvalue = elem.value;
+
+            if (qvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_question?qid=" + qid + "&flag=" + flag + "&qvalue=" + qvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+    
+
+
+</head>
+<body>
+
+<a href="/">Home</a>
+<a href="waadmin">Admin</a>
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Administrator</h2>
+    <a href="waadmin"><button>Event질문</button></a>
+    <a href="waresult"><button>Event결과</button></a>
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h1>Event</h1>
+    <table width="100%">
+        <tr height="25">
+            <td width="10%">
+                <input type="text" id="pname" value="" required>
+            </td>
+            <td width="10%">
+                <input type="text" id="pdesc" value="" required>
+            </td>
+            <td width="10%">
+                <input type="button" value="이벤트생성" onclick="createQheader()">
+            </td>
+            <td width="70%"></td>
+        </tr>
+    </table>
+    <div style="margin:20px 0;">
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text" style="width:100%;" value="Year12" hid="1" flag="pname" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text" style="width:100%;"  value="이번 연말 꼭 하고 싶은 것은 무엇인가요?" hid="1" flag="pdesc" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <input type="text" style="width:100%;"  value="7" hid="1" flag="plevel" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="10%">
+                        <a href="waadmin?headerid=1">선택</a>
+                    </td>
+                    <td width="52%">
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text" style="width:100%;" value="Year01" hid="2" flag="pname" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text" style="width:100%;"  value="새해 맞이 뭐 하실래요?" hid="2" flag="pdesc" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <input type="text" style="width:100%;"  value="1" hid="2" flag="plevel" onchange="changeQheader(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="10%">
+                        <a href="waadmin?headerid=2">선택</a>
+                    </td>
+                    <td width="52%">
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<div style="margin:10px 0;padding:10px;">
+    <h2><span style="color:#000;">Year12. 이번 연말 꼭 하고 싶은 것은 무엇인가요?</span>
+        <span><button onclick="createQuestion(this)" hid="1" pid="0">ADD CHILD</button></span>
+    </h2>
+    <h3><span style="color:#3388cc;">질문을 선택하세요</span></h3>
+
+    <div style="margin:20px 0;">
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text"  style="width:100%;" value="Q1" qid="5" flag="qname" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="연인과 데이트" qid="5" flag="qdesc" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <a href="waadmin?headerid=1&parentid=5"><button>선택</button></a>
+                    </td>
+                    <td width="63%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text"  style="width:100%;" value="Q1" qid="6" flag="qname" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="가족과 저녁식사" qid="6" flag="qdesc" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <a href="waadmin?headerid=1&parentid=6"><button>선택</button></a>
+                    </td>
+                    <td width="63%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text"  style="width:100%;" value="Q1" qid="7" flag="qname" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="친구들과 연말 파티" qid="7" flag="qdesc" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <a href="waadmin?headerid=1&parentid=7"><button>선택</button></a>
+                    </td>
+                    <td width="63%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="10%">
+                        <input type="text"  style="width:100%;" value="Q1" qid="8" flag="qname" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="집에서 혼술" qid="8" flag="qdesc" onchange="changeQuestion(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">
+                        <a href="waadmin?headerid=1&parentid=8"><button>선택</button></a>
+                    </td>
+                    <td width="63%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

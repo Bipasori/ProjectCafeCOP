@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI (Myers-Briggs Type Indicator) admin</title>
+    
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQresult(elem) {
+
+            var hid = elem.getAttribute("hid");
+
+            var strurl = "create_qresult?headerid=" + hid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQresult(elem) {
+
+            var rid = elem.getAttribute("rid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qresult?rid=" + rid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+
+</head>
+<body>
+
+<a href="/">Home</a>
+<a href="waadmin">Admin</a>
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Administrator</h2>
+    <a href="waadmin"><button>Event질문</button></a>
+    <a href="waresult"><button>Event결과</button></a>
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h1>Event result</h1>
+    <div style="margin:20px 0;">
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="31%">Year12 . 이번 연말 꼭 하고 싶은 것은 무엇인가요?
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">7
+                    </td>
+                    <td width="1%"></td>
+                    <td width="10%">
+                        <a href="waresult?headerid=1">선택</a>
+                    </td>
+                    <td width="52%">
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="31%">Year01 . 새해 맞이 뭐 하실래요?
+                    </td>
+                    <td width="1%"></td>
+                    <td width="5%">1
+                    </td>
+                    <td width="1%"></td>
+                    <td width="10%">
+                        <a href="waresult?headerid=2">선택</a>
+                    </td>
+                    <td width="52%">
+
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+    </div>
+
+</div>
+
+<div style="margin:10px 0;padding:10px;">
+    <h2>
+        <span style="color:#000;">Year12. 이번 연말 꼭 하고 싶은 것은 무엇인가요?</span>
+        <span><button onclick="createQresult(this)" hid="1" >ADD RESULT</button></span>
+    </h2>
+    <div style="margin:20px 0;">
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="6%">
+                        <input type="text"  style="width:100%;" value="1.1.1.1.1.1.1." rid="1" flag="rcode" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.google.com/search?q=white%20wine" rid="1" flag="rlink" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" rid="1" flag="rimage" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="깔끔한 화이트." rid="1" flag="rdesc" onchange="changeQresult(this)">
+                    </td>
+                    <td width="9%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="6%">
+                        <input type="text"  style="width:100%;" value="1.1.1.1.1.1.2." rid="2" flag="rcode" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.google.com/search?q=red%20wine" rid="2" flag="rlink" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" rid="2" flag="rimage" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="암거나 짱!" rid="2" flag="rdesc" onchange="changeQresult(this)">
+                    </td>
+                    <td width="9%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="6%">
+                        <input type="text"  style="width:100%;" value="1.1.1.1.1.1.3." rid="3" flag="rcode" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.google.com/search?q=red%20wine%20cabinet" rid="3" flag="rlink" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" rid="3" flag="rimage" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="와인 저장고가 필요해!" rid="3" flag="rdesc" onchange="changeQresult(this)">
+                    </td>
+                    <td width="9%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="6%">
+                        <input type="text"  style="width:100%;" value="1.1.1.1.1.1.1." rid="4" flag="rcode" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="http://www.globalintelligence.kr/" rid="4" flag="rlink" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" rid="4" flag="rimage" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="역쉬 레드!" rid="4" flag="rdesc" onchange="changeQresult(this)">
+                    </td>
+                    <td width="9%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="margin:10px 0;">
+            <table width="100%">
+                <tr height="25">
+                    <td width="6%">
+                        <input type="text"  style="width:100%;" value="1.1.1.1.1.1.3." rid="5" flag="rcode" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.google.com/search?q=red wine" rid="5" flag="rlink" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="30%">
+                        <input type="text"  style="width:100%;" value="https://www.mdanderson.org/publications/focused-on-health/February-2017/red-wine-health-benefits-facts-and-myths/jcr:content/featuredImage.resize.1444.0.medium.dir.jpg/1542758649561.jpg" rid="5" flag="rimage" onchange="changeQresult(this)">
+                    </td>
+                    <td width="1%"></td>
+                    <td width="20%">
+                        <input type="text"  style="width:100%;" value="칭구들과 레드!" rid="5" flag="rdesc" onchange="changeQresult(this)">
+                    </td>
+                    <td width="9%">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

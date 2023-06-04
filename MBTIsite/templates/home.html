@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI (Myers-Briggs Type Indicator)</title>
+
+    {% block scripts %}
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQheader() {
+
+            var pname = document.getElementById("pname").value;
+            var pdesc = document.getElementById("pdesc").value;
+
+            if (pname == "") {
+                document.getElementById("pname").focus();
+                return false;
+            }
+            if (pdesc == "") {
+                document.getElementById("pdesc").focus();
+                return false;
+            }
+
+            var strurl = "create_qheader?pname=" + pname + "&pdesc=" + pdesc;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQheader(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qheader?headerid=" + hid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function createQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+
+            var strurl = "create_question?headerid=" + hid + "&parentid=" + pid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQuestion(elem) {
+
+            var qid = elem.getAttribute("qid");
+            var flag = elem.getAttribute("flag");
+            var qvalue = elem.value;
+
+            if (qvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_question?qid=" + qid + "&flag=" + flag + "&qvalue=" + qvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function selectEvent(hid) {
+
+            var strurl = "make_session?hid=" + hid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    location.href = "/?headerid=" + hid;
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function resetEvent() {
+
+            var strurl = "reset_session";
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    location.href = "/";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function selectQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+            var strurl = "select_answer?qid=" + pid;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.href = "/?headerid=" + hid + "&parentid=" + pid;
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+
+    </script>
+    {% endblock %}
+
+
+</head>
+<body>
+
+<span style="margin-right:20px;"><a href="/">Home</a></span>
+<span><a href="waadmin">Admin</a></span>
+
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Event - <span style="color:#FF6600;">{{ eventid }}</span></h2>
+</div>
+<div style="margin:20px 0;padding:10px;">
+    {% if headerid == "0" %}
+        <h2><span style="color:#000;">{{ htitle }}</span> </h2>
+        <div style="margin:20px 0;">
+            {% if not rsTop %}
+                <p class="text-center">Header 없습니다! </p>
+            {% else %}
+                {% for i in rsTop %}
+                    <div style="margin:10px 0;padding:10px 0;border-top:solid 1px #888;">
+                        <span>{{ i.pname }}</span>
+                        <span onclick="selectEvent({{ i.id }})" style="margin-left:30px;cursor:pointer;color:#3388cc;">{{ i.pdesc }}</span>
+                        <span  style="margin-left:30px;">{{ i.level_max }} 단계</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% else %}
+        <h2><span style="color:#000;">{{ htitle }}</span> <button onclick="resetEvent()" >이벤트 선택</button></h2>
+    {% endif %}
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h3><span style="color:#000;">총{{ levelmax }} - {{ qask }}</span></h3>
+    <div style="margin:20px 0;">
+        {% if levelmax == levelnow %}
+            {% if not rsResult %}
+                <div style="margin:10px 0;">
+                <a href="https://www.google.com/search?q=red%20wine">추천 기본<br>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Makgeolli_4.jpg" style="width:300px;"></a>
+                </div>
+            {% else %}
+                {% for k in rsResult %}
+                <div style="margin:10px 0;">
+                <a href="{{ k.result_link }}">{{ k.result_desc }}<br>
+                <img src="{{ k.image_link }}" style="width:3n0%;"></a>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {% if not rsQuestion %}
+                <p>질문이 없습니다.</p>
+            {% else %}
+                {% for j in rsQuestion %}
+                    <div style="margin:10px 0;">
+                        <span hid="{{ headerid }}" pid="{{ j.id }}" onclick="selectQuestion(this)" style="color:#3388cc;cursor:pointer;">{{ j.qname }} {{ j.qdesc }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+    </div>
+    <div style="margin-top:30px;">
+        <div style="padding:10px 0;">{{useranswer}}</div>
+        <pre style="font-size:18px;">{{usernote}}</pre>
+    </div>
+</div>
+
+</body>
+</html>

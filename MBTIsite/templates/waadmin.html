@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI (Myers-Briggs Type Indicator) admin</title>
+
+    {% block scripts %}
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQheader() {
+
+            var pname = document.getElementById("pname").value;
+            var pdesc = document.getElementById("pdesc").value;
+
+            if (pname == "") {
+                document.getElementById("pname").focus();
+                return false;
+            }
+            if (pdesc == "") {
+                document.getElementById("pdesc").focus();
+                return false;
+            }
+
+            var strurl = "create_qheader?pname=" + pname + "&pdesc=" + pdesc;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQheader(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qheader?headerid=" + hid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function createQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var pid = elem.getAttribute("pid");
+
+            var strurl = "create_question?headerid=" + hid + "&parentid=" + pid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+
+        function changeQuestion(elem) {
+
+            var hid = elem.getAttribute("hid");
+            var qid = elem.getAttribute("qid");
+            var flag = elem.getAttribute("flag");
+            var qvalue = elem.value;
+
+            if (qvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_question?headerid=" + hid + "&qid=" + qid + "&flag=" + flag + "&qvalue=" + qvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function deleteQuestion(elem) {
+
+            var qid = elem.getAttribute("qid");
+
+            if (!confirm("Delete?")) {
+                return false;
+            }
+
+            var strurl = "delete_question?qid=" + qid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    if (obj.flag == "1") {
+                        alert(obj.result_msg);
+                    }
+                    else {
+                        alert(obj.result_msg);
+                        document.getElementById("qbox_"+qid).remove();
+                    }
+
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+    </script>
+    {% endblock %}
+
+
+</head>
+<body>
+
+<span style="margin-right:20px;"><a href="/">Home</a></span>
+<span><a href="waadmin">Admin</a></span>
+
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Administrator</h2>
+    <a href="waadmin"><button>Event질문</button></a>
+    <a href="waresult"><button>Event결과</button></a>
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h1>Event header</h1>
+    <table width="100%">
+        <tr height="25">
+            <td width="10%">
+                <input type="text" id="pname" value="" required>
+            </td>
+            <td width="10%">
+                <input type="text" id="pdesc" value="" required>
+            </td>
+            <td width="10%">
+                <input type="button" value="이벤트생성" onclick="createQheader()">
+            </td>
+            <td width="70%"></td>
+        </tr>
+    </table>
+    <div style="margin:20px 0;">
+        {% if not rsTop %}
+            <p class="text-center">Header 없습니다! </p>
+        {% else %}
+            {% for i in rsTop %}
+                <div style="margin:10px 0;">
+                    <table width="100%">
+                        <tr height="25">
+                            <td width="10%">
+                                <input type="text" style="width:100%;" value="{{ i.pname }}" hid="{{ i.id }}" flag="pname" onchange="changeQheader(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="20%">
+                                <input type="text" style="width:100%;"  value="{{ i.pdesc }}" hid="{{ i.id }}" flag="pdesc" onchange="changeQheader(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="5%">
+                                <input type="text" style="width:100%;text-align:center;"  value="{{ i.level_max }}" hid="{{ i.id }}" flag="plevel" onchange="changeQheader(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="10%">
+                                <a href="waadmin?headerid={{ i.id }}">선택</a>
+                            </td>
+                            <td width="52%">
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+<div style="margin:10px 0;padding:10px;">
+<h2><span style="color:#000;">{{ htitle }}</span>
+    {% if headerid != "0" %}
+    <span><button onclick="createQuestion(this)" hid="{{ headerid }}" pid="0">ADD CHILD</button></span>
+    {% endif %}
+</h2>
+<h3>
+    <div style="color:#3388cc;">{{ ptitle }} </div>
+    <div style="padding:10px 0;color:#3388cc;">
+        <input type="text"  style="width:50%;" value="{{qask}}" hid="{{ headerid }}" qid="{{ parentid }}" flag="qask" onchange="changeQuestion(this)">
+    </div>
+    {% if parentid != "0" %}
+    <div><button onclick="createQuestion(this)" hid="{{ headerid }}" pid="{{ parentid }}">ADD CHILD</button></div>
+    {% endif %}
+</h3>
+    <div style="margin:20px 0;">
+        {% if not rsQuestion %}
+            <p class="text-center">질문이 없습니다!  </p>
+        {% else %}
+            {% for j in rsQuestion %}
+                <div style="margin:10px 0;" id="qbox_{{ j.id }}">
+                    <table width="100%">
+                        <tr height="25">
+                            <td width="10%">
+                                답{{ j.order_no }} <span style="color:#ff6600;"><b>{{ j.qname }}</b></span>
+                            </td>
+                            <td width="1%"></td>
+                            <td width="20%">
+                                <input type="text"  style="width:100%;" value="{{ j.qdesc }}" hid="{{ headerid }}" qid="{{ j.id }}" flag="qdesc" onchange="changeQuestion(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="5%">
+                                <a href="waadmin?headerid={{ headerid }}&parentid={{ j.id }}"><button>선택</button></a>
+                            </td>
+                            <td width="10%" align="center">
+                                <span style="cursor:pointer;" qid="{{ j.id }}" onclick="deleteQuestion(this)">X</span>
+                            </td>
+                            <td width="53%">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MBTI (Myers-Briggs Type Indicator) admin</title>
+
+    {% block scripts %}
+    <script>
+        // https://docs.djangoproject.com/en/3.1/ref/csrf/
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        var csrftoken = getCookie('csrftoken');
+
+        var xhr;
+
+        function createQresult(elem) {
+
+            var hid = elem.getAttribute("hid");
+
+            var strurl = "create_qresult?headerid=" + hid;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+
+                    location.reload();
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function changeQresult(elem) {
+
+            var rid = elem.getAttribute("rid");
+            var flag = elem.getAttribute("flag");
+            var pvalue = elem.value;
+
+            if (pvalue == "") {
+                elem.focus();
+                return false;
+            }
+
+            var strurl = "change_qresult?rid=" + rid + "&flag=" + flag + "&pvalue=" + pvalue;
+            //alert(strurl);
+            //return false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    //var obj = JSON.parse(data);
+                    //alert(obj.result_msg);
+                    elem.style.backgroundColor = "#E8E8E8";
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+        function deleteResult(elem) {
+
+            var rid = elem.getAttribute("rid");
+
+            if (!confirm("Delete?")) {
+                return false;
+            }
+
+            var strurl = "delete_qresult?rid=" + rid;
+            //alert(strurl);
+            //eturn false;
+
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    var data = xhr.responseText;
+
+                    var obj = JSON.parse(data);
+                    alert(obj.result_msg);
+                    document.getElementById("resultbox_"+rid).remove();
+
+                }
+            };
+            xhr.open("GET", strurl);
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            xhr.send(null);
+        }
+
+    </script>
+    {% endblock %}
+
+
+</head>
+<body>
+
+<span style="margin-right:20px;"><a href="/">Home</a></span>
+<span><a href="waadmin">Admin</a></span>
+
+<div style="margin:20px 0;padding:10px;background-color:#e8e8e8;">
+    <h2>Administrator</h2>
+    <a href="waadmin"><button>Event질문</button></a>
+    <a href="waresult"><button>Event결과</button></a>
+</div>
+
+<div style="margin:20px 0;padding:10px;">
+<h1>Event result</h1>
+    <div style="margin:20px 0;">
+        {% if not rsTop %}
+            <p class="text-center">Header 없습니다! </p>
+        {% else %}
+            {% for i in rsTop %}
+                <div style="margin:10px 0;border-top:solid 1px #ddd;">
+                    <table width="100%">
+                        <tr height="25">
+                            <td width="31%">{{ i.pname }} . {{ i.pdesc }}
+                            </td>
+                            <td width="1%"></td>
+                            <td width="5%">{{ i.level_max }}
+                            </td>
+                            <td width="1%"></td>
+                            <td width="10%">
+                                <a href="waresult?headerid={{ i.id }}">선택</a>
+                            </td>
+                            <td width="10%">
+                            </td>
+                            <td width="42%">
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+</div>
+
+<div style="margin:10px 0;padding:10px;">
+<h2><span style="color:#000;">{{ htitle }}</span>
+    {% if headerid != "0" %}
+    <span><button onclick="createQresult(this)" hid="{{ headerid }}" >ADD RESULT</button></span>
+    {% endif %}
+</h2>
+    <div style="margin:20px 0;">
+        {% if not rsResult %}
+            <p class="text-center">결과가 없습니다! </p>
+        {% else %}
+            {% for j in rsResult %}
+                <div style="margin:10px 0;" id="resultbox_{{ j.id }}">
+                    <table width="100%">
+                        <tr height="25">
+                            <td width="6%" align="center">
+                                <input type="text"  style="width:100%;" value="{{ j.result_code }}" rid="{{ j.id }}" flag="rcode" onchange="changeQresult(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="29%">
+                                <input type="text"  style="width:100%;" value="{{ j.result_link }}" rid="{{ j.id }}" flag="rlink" onchange="changeQresult(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="34%">
+                                <input type="text"  style="width:100%;" value="{{ j.image_link }}" rid="{{ j.id }}" flag="rimage" onchange="changeQresult(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="15%">
+                                <input type="text"  style="width:100%;" value="{{ j.result_desc }}" rid="{{ j.id }}" flag="rdesc" onchange="changeQresult(this)">
+                            </td>
+                            <td width="1%"></td>
+                            <td width="9%" align="center">
+                                <span style="cursor:pointer;" rid="{{ j.id }}" onclick="deleteResult(this)">X</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<div style="margin:10px 0;padding:10px;" >
+    {% if not rsTarget %}
+        <p class="text-center">대상이 없습니다! </p>
+    {% else %}
+        {% for j in rsTarget %}
+            <div style="margin:10px 0;">
+                <span style="color:#3388cc;">{{ j.qname }}</span> - {{ j.qdesc }}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+</body>
+</html>
