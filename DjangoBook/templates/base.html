@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Django CRUD using Ajax</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+    <script>
+
+    </script>
+
+</head>
+<body>
+
+<div class="container">
+
+    <div class="col-md-12 well">
+        <a class="navbar-brand" href="/">HOME</a>
+        <h3 class="text-primary">Django로 조회.등록.수정.삭제 (CRUD)</h3>
+        <hr style="border-top:1px dotted #ccc;" />
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src="{% static 'js/jquery-3.1.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+    {% block javascript %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

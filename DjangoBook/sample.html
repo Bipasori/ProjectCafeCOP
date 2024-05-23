@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Django CRUD using Ajax</title>
+    <link rel="stylesheet" type="text/css" href="./static/css/bootstrap.css" />
+</head>
+<body>
+
+<div class="container">
+
+    <div class="col-md-12 well">
+      <a class="navbar-brand" href="/">HOME</a>
+      <h3 class="text-primary">Django로 조회.등록.수정.삭제 (CRUD)</h3>
+      <hr style="border-top:1px dotted #ccc;" />
+
+      <h1 class="page-header">책목록</h1>
+      <p>
+        <button type="button" class="btn btn-primary js-create-book" data-url="/create/">
+          <span class="glyphicon glyphicon-plus"></span>
+          책 등록
+        </button>
+      </p>
+
+      <table class="table" id="book-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>제목</th>
+            <th>출판일</th>
+            <th>작가</th>
+            <th>가격</th>
+            <th>페이지</th>
+            <th>분류</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>4</td>
+            <td>우주로 가야하는 인류</td>
+            <td>Jan. 5, 2020</td>
+            <td>하드카바</td>
+            <td>마이콜</td>
+            <td>45.00</td>
+            <td>354</td>
+            <td style="width:150px;">
+                <button type="button"
+                    class="btn btn-warning btn-sm js-update-book"
+                    data-url="/books/4/update/">
+                    <span class="glyphicon-pencil"></span> 수정
+                </button>
+                <button type="button"
+                    class="btn btn-danger btn-sm js-delete-book"
+                    data-url="/books/4/delete/">
+                    <span class="glyphicon glyphicon-trash"></span> 삭제
+                </button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>3</td>
+            <td>영맨</td>
+            <td>Jan. 5, 2020</td>
+            <td>종이책</td>
+            <td>정사장</td>
+            <td>22.00</td>
+            <td>125</td>
+            <td style="width:150px;">
+                <button type="button"
+                        class="btn btn-warning btn-sm js-update-book"
+                        data-url="/books/3/update/">
+                    <span class="glyphicon-pencil"></span> 수정
+                </button>
+                <button type="button"
+                      class="btn btn-danger btn-sm js-delete-book"
+                      data-url="/books/3/delete/">
+                <span class="glyphicon glyphicon-trash"></span> 삭제
+                </button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>별과달</td>
+            <td>Jan. 5, 2020</td>
+            <td>종이책</td>
+            <td>고길동</td>
+            <td>124.00</td>
+            <td>300</td>
+            <td style="width:150px;">
+                <button type="button"
+                    class="btn btn-warning btn-sm js-update-book"
+                    data-url="/books/1/update/">
+                    <span class="glyphicon-pencil"></span> 수정
+                </button>
+                <button type="button"
+                    class="btn btn-danger btn-sm js-delete-book"
+                    data-url="/books/1/delete/">
+                    <span class="glyphicon glyphicon-trash"></span> 삭제
+                </button>
+            </td>
+        </tr>
+
+        </tbody>
+      </table>
+
+      <div class="modal fade" id="modal-book">
+        <div class="modal-dialog">
+          <div class="modal-content">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="./static/js/jquery-3.1.1.min.js"></script>
+    <script src="./static/js/bootstrap.min.js"></script>
+    <script src="./static/js/script.js"></script>
+
+</div>
+
+</body>
+</html>

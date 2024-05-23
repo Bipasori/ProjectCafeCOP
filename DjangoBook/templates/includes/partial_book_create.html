@@ -1,0 +1,16 @@
+<form method="post" action="{% url 'book_create' %}" class="js-book-create-form">
+  {% csrf_token %}
+  <div class="modal-header">
+    <h4 class="modal-title">책 등록</h4>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">×</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    {% include 'includes/partial_book_form.html' %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+    <button type="submit" class="btn btn-primary">저장</button>
+  </div>
+</form>

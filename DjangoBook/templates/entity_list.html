@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+ 
+{% load static %}
+
+{% block content %}
+  <h1 class="page-header">Entity CRUD No-code</h1>
+  <p>
+    <button type="button" class="btn btn-primary" onclick="createEntity()">
+      Entity 등록
+    </button>
+  </p>
+  <table class="table" id="book-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>엔티티</th>
+        <th style="text-align:center;">상태</th>
+        <th></th>
+        <th style="width:250px;"></th>
+        <th style="width:400px;"></th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      {% for i in rsEntity %}
+          <tr>
+              <td>
+                  {% if i.status == 'CONFIG' %}
+                  <a href="/entity{{i.id}}" target="_blank">{{ i.entity_name }}</a>
+                  {% else %}
+                  {{ i.entity_name }}
+                  {% endif %}
+              </td>
+              <td style="text-align:center;">{{ i.status }}</td>
+              <td style="text-align:center;"> +
+                  <button eid="{{i.id}}" onclick="createMeta(this);">Char</button>
+                  <button eid="{{i.id}}" onclick="createMeta(this);">Int</button>
+              </td>
+              <td><span eid="{{i.id}}" onclick="readMeta(this)" style="color:#0000ff;cursor:pointer;" id="etitle_{{i.id}}">Meta</span></td>
+              <td style="width:250px;background-color:#f8f8f8;">
+                  <div id="metabox_{{i.id}}" style="display:none;"></div>
+              </td>
+              <td style="width:400px;text-align:right;">
+                  {% if i.status == '0' %}
+                    <button class="btn btn-primary" eid="{{i.id}}" onclick="createTable(this);">TABLE+</button>
+                  {% else %}
+                    <button class="btn btn-danger" eid="{{i.id}}" onclick="generateCode(this);">Data</button>
+                    <button class="btn btn-danger" eid="{{i.id}}" onclick="generateCode(this);">View</button><br>
+                    <button class="btn btn-danger" eid="{{i.id}}" onclick="generateCode(this);">Temp</button>
+                    <button class="btn btn-danger" eid="{{i.id}}" onclick="generateCode(this);">Config</button>
+                  {% endif %}
+              </td>
+          </tr>
+      {% empty %}
+          <tr>
+              <td colspan="6" class="text-centr bg-warning">No entity</td>
+          </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+    {% block javascript %}
+    <script src="{% static 'js/script_entity.js' %}"></script>
+    {% endblock %}
+
+{% endblock %}

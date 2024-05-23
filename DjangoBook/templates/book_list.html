@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+ 
+{% load static %}
+
+{% block content %}
+  <h1 class="page-header">책목록</h1>
+  <p>
+    <button type="button" class="btn btn-primary js-create-book" data-url="{% url 'book_create' %}">
+      <span class="glyphicon glyphicon-plus"></span>
+      책 등록
+    </button>
+  </p>
+  <table class="table" id="book-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>제목</th>
+        <th>출판일</th>
+        <th>작가</th>
+        <th>가격</th>
+        <th>페이지</th>
+        <th>분류</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include "includes/partial_book_list.html" %}
+    </tbody>
+  </table>
+  <div class="modal fade" id="modal-book">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'js/script.js' %}"></script>
+{% endblock %}

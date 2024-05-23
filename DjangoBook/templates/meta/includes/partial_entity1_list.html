@@ -1,0 +1,22 @@
+{% for ett in entity1 %} 
+ <tr> 
+   <td>{{ ett.id }}</td>  
+   <td>{{ ett.Col001 }}</td>  
+   <td>{{ ett.Col002 }}</td>  
+   <td>{{ ett.Col003 }}</td>  
+   <td>{{ ett.Col004 }}</td>  
+   <td>{{ ett.Col005 }}</td>  
+    <td style="width:150px;text-align:right;">
+      <button type="button"  class="btn btn-warning btn-sm js-update-entity1" data-url="{% url 'entity1_update' ett.id %}"> 
+          수정 
+       </button> 
+      <button type="button"  class="btn btn-danger btn-sm js-delete-entity1" data-url="{% url 'entity1_delete' ett.id %}"> 
+          삭제 
+      </button> 
+    </td> 
+ </tr> 
+{% empty %} 
+ <tr> 
+  <td colspan="7" class="text-centr bg-warning">No data...</td> 
+ </tr> 
+{% endfor %} 

@@ -1,0 +1,40 @@
+{% extends 'base.html' %} 
+
+{% load static %} 
+
+{% block javascript %} 
+    <script src="{% static 'jsmeta/script_entity1.js' %}"></script> 
+{% endblock %} 
+
+{% block content %} 
+
+<h1 class='page-header'>Entity1 관리</h1> 
+<p> 
+  <button type='button' class='btn btn-primary js-create-entity1' data-url="{% url 'entity1_create' %}"> 
+등록</button> 
+</p> 
+<table class="table" id="entity1-table"> 
+  <thead> 
+    <tr> 
+        <th>#</th> 
+        <th>Col001 varchar(255)</th> 
+        <th>Col002 varchar(255)</th> 
+        <th>Col003 int(11)</th> 
+        <th>Col004 int(11)</th> 
+        <th>Col005 int(11)</th> 
+      <th></th> 
+    </tr> 
+  </thead> 
+  <tbody> 
+    {% include "meta/includes/partial_entity1_list.html" %} 
+  </tbody> 
+</table> 
+<div class="modal fade" id="modal-entity1"> 
+  <div class="modal-dialog"> 
+    <div class="modal-content">  
+    </div> 
+  </div> 
+</div> 
+
+{% endblock %} 
+
