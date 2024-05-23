@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR test</title>
+    <script>
+
+    // https://docs.djangoproject.com/en/3.1/ref/csrf/
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function uploadFile() {
+
+        document.getElementById('Coauthform').submit();
+
+    }
+
+    </script>
+</head>
+<body>
+
+    <h1>OCR test... <a href="/coocr_upload">OCR</a></h1>
+
+    <div class="row" style="margin:30px 0;">
+        {% if rsSource %}
+        <table width="100%" border="1" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>파일명</th>
+                <th>이미지</th>
+                <th>결과</th>
+            </tr>
+            {% for i in rsSource %}
+            <tr>
+                <td valign="top">{{ i.src_file }}<br>
+                {{i.created_at}}
+                </td>
+                <td valign="top"><img src="/static/source/{{i.src_name}}" style="width:90%;" /></td>
+                <td valign="top">
+                    <pre>{{i.result_text}}</pre>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+            Source없습니다.
+        {% endif %}
+    </div>
+
+</body>
+</html>

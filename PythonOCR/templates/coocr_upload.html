@@ -1,0 +1,71 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OCR test</title>
+    <script>
+
+    // https://docs.djangoproject.com/en/3.1/ref/csrf/
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+
+    function uploadFile() {
+
+        document.getElementById('Coauthform').submit();
+
+    }
+
+    </script>
+</head>
+<body>
+
+    <h1>OCR test... <a href="/">HOME</a></h1>
+
+    <form action='/coocr_upload' method='post' id='Coauthform' enctype='multipart/form-data'>
+    {% csrf_token %}
+    <div class="row" style="margin:30px 0;">
+        <input type="file" class="form-control" id="uploadfile"  name="uploadfile" ><br>
+    </div>
+    </form>
+
+    <div class="row" style="margin:30px 0;">
+        <button onclick='uploadFile();' style='margin-right:10px;'>READ</button>
+    </div>
+
+    <div class="row" style="margin:30px 0;padding:10px;background-color:#ddd;">
+        <table width="100%">
+            <tr>
+                <td width="50%">
+                    {% if imgname == '' %}
+                    파일선택 > 이미지를 READ하세요.
+                    {% else %}
+                    <img src="/static/source/{{imgname}}" style="width:90%;" />
+                    {% endif %}
+                </td>
+                <td width="50%">
+                    <pre>
+                    {{ resulttext }}
+                    </pre>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
