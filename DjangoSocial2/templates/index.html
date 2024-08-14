@@ -1,0 +1,80 @@
+{% load socialaccount %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django Social longin</title>
+</head>
+<body>
+<h1>Social login <a href="/">HOME</a></h1>
+
+<div style="margin:30px 0;line-height:180%;border-top:solid 1px #ddd;">
+    <h3>Django account 를 사용</h3>
+    <a href="/accounts/login">로그인</a></br>
+    {%  if user.is_authenticated %}
+        <a href="/accounts/logout">로그아웃</a></br>
+        {{ user.username }} 님
+    {% else %}
+        <a href="{% provider_login_url 'google' %}">구글 로그인</a></br>
+    {% endif %}
+</div>
+
+<div style="margin:30px 0;line-height:180%;color:#ff6600;">
+    {{ mymessage }}
+</div>
+
+<div style="margin:50px 0;line-height:180%;border-top:solid 1px #ddd;">
+    <h3>회원가입</h3>
+    <form action="/myregister">
+        {% csrf_token %}
+        <input type="text" name="user_name" id="user_name1" value="" placeholder="Name을 넣어주세요" />
+        <input type="password" name="user_pwd" id="user_pwd1" value="" />
+        <input type="email" name="user_email" id="user_email" value="" placeholder="이메일을 넣어주세요" />
+        <input type="submit" value="회원가입" />
+    </form>
+</div>
+
+<div style="margin:50px 0;line-height:180%;border-top:solid 1px #ddd;">
+    <h3>비밀번호 변경</h3>
+    {%  if user.is_authenticated %}
+        {{ user.username }} 님
+        <form action="/mychange">
+            {% csrf_token %}
+            <input type="hidden" name="user_name" value="" placeholder="Name을 넣어주세요" />
+            <input type="password" name="user_pwd" value="" />
+            <input type="submit" value="비번변경" />
+        </form>
+    {% endif %}
+</div>
+
+<div style="margin:50px 0;line-height:180%;border-top:solid 1px #ddd;">
+    <h3>로그인, 로그아웃</h3>
+    {%  if user.is_authenticated %}
+        <a href="/mylogout">로그아웃</a></br>
+        {{ user.username }} 님
+    {% else %}
+        <form action="/mylogin">
+            {% csrf_token %}
+            <input type="text" name="user_name" value="" placeholder="Name을 넣어주세요" />
+            <input type="password" name="user_pwd" value="" />
+            <input type="submit" value="로그인" />
+        </form>
+    {% endif %}
+</div>
+
+<div style="margin:50px 0;line-height:200%;border-top:solid 1px #ddd;">
+    <h3>목록</h3>
+    {% if users %}
+        {% for i in users %}
+        <div style="border-top:solid 1px #888;">
+            {{ i.username }} - {{ i.last_login }} - {{ i.point_amt }}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>No users...</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
