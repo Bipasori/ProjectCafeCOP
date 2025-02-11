@@ -1,11 +1,11 @@
-1. 게시판
-2. 시각화
+1. board
+2. visualize
 3. Data Set
 
 pip install django
 python manage.py runserver
 
-bootstrapmade.com 에서 Vesperr 디자인 템플릿 적용 (상업적 사용은 구매해서 사용하세요)
+bootstrapmade.com  Vesperr design tekplate (need purchase for commercial usage)
 
 pip install mysqlclient
 pip install pymysql
@@ -17,7 +17,6 @@ pip install markdown
 pip install pygments
 
 
-학습 대상
-1. wiki
+Reference :
 https://www.youtube.com/watch?v=Cq0AqIM8ZaA
 https://github.com/mnahinkhan/cs50-wiki
