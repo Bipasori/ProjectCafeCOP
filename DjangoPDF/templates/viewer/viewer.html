@@ -4,84 +4,107 @@
   <meta charset="UTF-8">
   <title>PDF 보기</title>
   <style>
-    body {
-      text-align: center;
-      font-family: sans-serif;
-      background-color: #f8f8f8;
-      margin: 0;
-      padding: 20px;
-    }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f4f8;
+    margin: 0;
+    padding: 30px;
+    text-align: center;
+  }
 
-    h1 {
-      margin-bottom: 30px;
-    }
+  h1 {
+    margin-bottom: 20px;
+  }
 
-    .page-pair {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-bottom: 30px;
-    }
+  .page-info {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 20px;
+  }
 
-    .page {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  .page-pair-wrapper {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 30px;
+  }
 
-    .page img {
-      max-width: 100%;
-      height: auto;
-      max-height: 80vh;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border: 1px solid #ddd;
-    }
+  .page-pair {
+    display: flex;
+    gap: 0px; /* 페이지 사이 여백 없음 */
+    border: 1px solid #ccc;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    background-color: white;
+  }
 
-    .page-number {
-      margin-top: 8px;
-      font-size: 15px;
-      color: #444;
-    }
+  .page {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 420px;
+    overflow: hidden;
+  }
 
-    .page-info {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 10px;
-    }
+  .page img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: none;
+  }
 
-    .nav {
-      margin-top: 30px;
-    }
+  .page-number {
+    font-size: 13px;
+    color: #666;
+    padding: 8px 0;
+    border-top: 1px solid #eee;
+    background: #fdfdfd;
+  }
 
-    .nav a {
-      margin: 0 12px;
-      padding: 10px 18px;
-      background: #007BFF;
-      color: white;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: bold;
-    }
+  .center-line {
+    width: 2px;
+    background-color: #999;
+    height: 100%;
+  }
 
-    .nav a:hover {
-      background: #0056b3;
-    }
+  .nav {
+    margin-top: 30px;
+  }
+
+  .nav a {
+    margin: 0 12px;
+    padding: 10px 18px;
+    background: #007BFF;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .nav a:hover {
+    background: #0056b3;
+  }
   </style>
 </head>
 <body>
   <h1>PDF 두 페이지 좌우 보기</h1>
 
+
   <div class="page-info">
     📄 현재 페이지: {{ page_range.0 }}–{{ page_range.1 }} / 총 {{ total_pages }}페이지
   </div>
 
-  <div class="page-pair">
-    {% for img, number in pages %}
-      <div class="page">
-        <img src="{{ img }}" alt="페이지 이미지">
-        <div class="page-number">페이지 {{ number }}</div>
-      </div>
-    {% endfor %}
+  <div class="page-pair-wrapper">
+    <div class="page-pair">
+      {% for img, number in pages %}
+        <div class="page">
+          <img src="{{ img }}" alt="페이지 이미지">
+          <div class="page-number">페이지 {{ number }}</div>
+        </div>
+        {% if forloop.first and pages|length == 2 %}
+          <div class="center-line"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
 
   <div class="nav">
@@ -92,5 +115,6 @@
       <a href="?page={{ next_page }}">다음 →</a>
     {% endif %}
   </div>
+
 </body>
 </html>
