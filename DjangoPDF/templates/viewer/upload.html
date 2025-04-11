@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF 업로드</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; }
+
+    .loader {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .progress-bar {
+      width: 60%;
+      height: 20px;
+      margin: 0 auto;
+      background: #eee;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+      background: #007BFF;
+      animation: loading 3s linear infinite;
+    }
+
+    @keyframes loading {
+      0% { width: 0%; }
+      50% { width: 100%; }
+      100% { width: 0%; }
+    }
+  </style>
+</head>
+<body>
+  <h1>PDF 파일 업로드</h1>
+  <form method="post" enctype="multipart/form-data" onsubmit="showLoader()">
+    {% csrf_token %}
+    <input type="file" name="pdf" required>
+    <button type="submit">업로드</button>
+  </form>
+
+  <div class="loader" id="loader">
+    <p>📄 PDF 변환 중입니다. 잠시만 기다려주세요...</p>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    function showLoader() {
+      document.getElementById("loader").style.display = "block";
+    }
+  </script>
+</body>
+</html>

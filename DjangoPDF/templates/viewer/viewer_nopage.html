@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>PDF 보기</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; }
+    .page-pair { display: flex; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+    .page-pair img { max-width: 45%; margin: 10px; border: 1px solid #ccc; }
+    .nav { margin-top: 20px; }
+    .nav a { margin: 0 10px; padding: 10px 15px; background: #eee; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <h1>PDF 두 페이지 보기</h1>
+  <div class="page-pair">
+    {% for img in pages %}
+      <img src="{{ img }}" alt="페이지 이미지">
+    {% endfor %}
+  </div>
+
+  <div class="nav">
+    {% if has_prev %}
+      <a href="?page={{ prev_page }}">← 이전</a>
+    {% endif %}
+    {% if has_next %}
+      <a href="?page={{ next_page }}">다음 →</a>
+    {% endif %}
+  </div>
+</body>
+</html>
