@@ -2,7 +2,16 @@ from django.shortcuts import render, redirect
 from django.core.files.storage import default_storage
 import fitz  # PyMuPDF
 import os
+import requests
+from io import BytesIO
 
+def get_pdf_file_object_from_url(pdf_url):
+    response = requests.get(pdf_url)
+    if response.status_code == 200:
+        pdf_file = BytesIO(response.content)
+        return pdf_file
+    else:
+        raise Exception(f"Failed to download PDF: {response.status_code}")
 
 def upload_pdf(request):
     if request.method == 'POST' and request.FILES.get('pdf'):
@@ -131,3 +140,8 @@ def view_pages(request):
     }
 
     return render(request, 'viewer/viewer.html', context)
+
+def view_pages2(request):
+    context = {}
+
+    return render(request, 'viewer/viewer2.html', context)

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>PDF Viewer</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #viewerContainer {
+      width: 100vw;
+      height: 100vh;
+      overflow: auto;
+      background-color: #ccc;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewerContainer"></div>
+
+  <!-- PDF.js 라이브러리 로드 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <script>
+    // PDF 파일 링크
+    const pdfUrl = "http://127.0.0.1:8000/static/image/4.pdf";  // 여기에 실제 PDF 링크 넣어주세요
+
+    // PDF.js 설정
+    const container = document.getElementById("viewerContainer");
+    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+
+    loadingTask.promise.then(function(pdf) {
+      console.log("PDF loaded");
+
+      // 모든 페이지 렌더링
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        pdf.getPage(pageNum).then(function(page) {
+          const viewport = page.getViewport({ scale: 1.5 });
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          container.appendChild(canvas);
+
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          page.render(renderContext);
+        });
+      }
+    }, function(reason) {
+      console.error("PDF loading error:", reason);
+    });
+  </script>
+</body>
+</html>
